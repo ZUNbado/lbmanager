@@ -12,8 +12,9 @@
 {% block content %}
 <div id="content-main">
 
-{% for obj in alias %}
-	{{ obj.name }} {{ obj.domain.name }}
+{% for map in maps %}
+<h1>{{ map.file }}</h1>
+<pre>{{ map.content }}</pre>
 {% endfor %}
 
 </div>

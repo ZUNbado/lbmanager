@@ -1,0 +1,3 @@
+{% for web in data %}
+{{ web.name }} {{ web.director.name }};
+{% endfor %}

@@ -1,6 +1,7 @@
 import paramiko
+import os
 
-class Connect():
+class ConfManager():
 	def __init__(self, host, user, passwd, port):
 		self.host=host
 		self.user=user
@@ -23,3 +24,15 @@ class Connect():
 
 	def command(self,command):
 		stdin, stdout, stderr = self.ssh.exec_command(command)
+
+
+class FilesManager():
+	@staticmethod
+	def DirExists(path):
+		if not os.path.exists(path): os.makedirs(path)
+
+	@staticmethod
+	def WriteFile(dst,content):
+		hl=open(dst, 'w')
+		hl.write(content)
+		hl.close()
