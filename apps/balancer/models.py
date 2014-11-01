@@ -15,5 +15,17 @@ class Backend(BalancerDefaults):
 	address = models.IPAddressField()
 
 class Director(BalancerDefaults):
+	TYPES = (
+		( 'Random', (
+			( 'random', 'Random'),
+			( 'client', 'Client'),
+			( 'hash', 'Hash' ),
+		),
+		),
+		( 'round-robin', 'Round Robin' ),
+		( 'dns', 'DNS' ),
+		( 'fallback', 'Fallback' )
+	)
 	name = models.CharField(max_length=200)
 	backends = models.ManyToManyField(Backend)
+	dirtype = models.CharField(max_length=200,choices=TYPES,default='round-robin')
