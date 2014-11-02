@@ -1,5 +1,5 @@
 from django.db import models
-from apps.balancer.models import Director
+from ..balancer.models import Director
 
 class FrontendDefaults(models.Model):
 	enabled = models.BooleanField(default=True)

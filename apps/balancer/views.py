@@ -3,8 +3,8 @@ from django.template import RequestContext, loader
 from django.shortcuts import redirect
 
 from .models import Director, Backend
-from apps.cluster.models import Member
-from apps.config.models import Config
+from ..cluster.models import Member
+from ..config.models import Config
 from libs.confmanager import ConfManager, FilesManager
 
 def apply(request):
