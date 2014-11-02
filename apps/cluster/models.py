@@ -35,6 +35,7 @@ class Cluster(ClusterDefaults):
     )
     name = models.CharField(max_length=200)
     backends = models.ManyToManyField(Member)
+    address = models.IPAddressField()
     port = models.IntegerField(default=80)
     mode = models.CharField(
         max_length=4,
