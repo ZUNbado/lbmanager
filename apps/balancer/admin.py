@@ -9,9 +9,10 @@ def set_disable(modeladmin, request, queryset):
     queryset.update(enabled=False)
 set_disable.short_description = u"Disable selected items"
 
-
-class BackendAdmin(admin.ModelAdmin):
+class BalancerDefaultAdmin(admin.ModelAdmin):
     actions = [set_enable,set_disable]
+
+class BackendAdmin(BalancerDefaultAdmin):
     list_display = ('name', 'server', 'port', 'enabled')
     fieldsets = (
         (None, {
@@ -27,8 +28,7 @@ class BackendAdmin(admin.ModelAdmin):
         })
     )
 
-class DirectorAdmin(admin.ModelAdmin):
-    actions = [set_enable,set_disable]
+class DirectorAdmin(BalancerDefaultAdmin):
     fields = ('name', 'backends', 'dirtype', 'group', 'enabled')
     list_display = ('name', 'dirtype', 'group', 'enabled')
 

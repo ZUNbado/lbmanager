@@ -11,10 +11,20 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Config',
+            name='ConfigDefaultAdmin',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('temp_dir', models.CharField(default=b'/tmp/lbmanager', max_length=200)),
+                ('enabled', models.BooleanField(default=True)),
+            ],
+            options={
+            },
+            bases=(models.Model,),
+        ),
+        migrations.CreateModel(
+            name='Config',
+            fields=[
+                ('configdefaultadmin_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='config.ConfigDefaultAdmin')),
+                ('temp_dir', models.CharField(max_length=200)),
                 ('nginx_maps_dir', models.CharField(max_length=200)),
                 ('nginx_conf_dir', models.CharField(max_length=200)),
                 ('nginx_sites_dir', models.CharField(max_length=200)),
@@ -25,33 +35,37 @@ class Migration(migrations.Migration):
             ],
             options={
             },
-            bases=(models.Model,),
+            bases=('config.configdefaultadmin',),
         ),
         migrations.CreateModel(
             name='Group',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('configdefaultadmin_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='config.ConfigDefaultAdmin')),
                 ('name', models.CharField(max_length=200)),
-                ('enabled', models.BooleanField(default=True)),
             ],
             options={
             },
-            bases=(models.Model,),
+            bases=('config.configdefaultadmin',),
         ),
         migrations.CreateModel(
             name='Server',
             fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
+                ('configdefaultadmin_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='config.ConfigDefaultAdmin')),
                 ('name', models.CharField(max_length=200)),
                 ('address', models.IPAddressField()),
                 ('ssh_user', models.CharField(max_length=200)),
                 ('ssh_password', models.CharField(max_length=200)),
                 ('ssh_port', models.IntegerField(default=22)),
-                ('enabled', models.BooleanField(default=True)),
             ],
             options={
             },
-            bases=(models.Model,),
+            bases=('config.configdefaultadmin',),
+        ),
+        migrations.AddField(
+            model_name='config',
+            name='cluster_servers',
+            field=models.ManyToManyField(to='config.Server'),
+            preserve_default=True,
         ),
         migrations.AddField(
             model_name='config',

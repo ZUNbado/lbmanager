@@ -7,7 +7,7 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('config', '__first__'),
+        ('config', '0001_initial'),
     ]
 
     operations = [
@@ -20,8 +20,8 @@ class Migration(migrations.Migration):
                 ('address', models.IPAddressField()),
                 ('port', models.IntegerField(default=80)),
                 ('mode', models.CharField(default=b'gate', max_length=4, choices=[(b'gate', b'Direct'), (b'ipip', b'Tunel IPIP'), (b'masq', b'Masquerading')])),
-                ('fallback_ip', models.IPAddressField(null=True, blank=True)),
-                ('fallback_port', models.IntegerField(null=True, blank=True)),
+                ('fallback_ip', models.IPAddressField(null=True, verbose_name='IP', blank=True)),
+                ('fallback_port', models.IntegerField(null=True, verbose_name='Port', blank=True)),
                 ('scheduler', models.CharField(default=b'wrr', max_length=5, choices=[(b'rr', b'Robin Robin'), (b'wrr', b'Weighted  Round  Robin'), (b'lc', b'Least-Connection'), (b'wlc', b'Weighted  Least-Connection'), (b'lblc', b'Locality-Based  Least-Connection'), (b'lblcr', b'Locality-Based  Least-Connection   with   Replication'), (b'dh', b'Destination  Hashing'), (b'sh', b'Source Hashing'), (b'sed', b'Shortest Expected Delay'), (b'nq', b'Never Queue')])),
                 ('persistent', models.IntegerField(default=300)),
                 ('netmask', models.IPAddressField(null=True, blank=True)),

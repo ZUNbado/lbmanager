@@ -99,7 +99,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='virtualhost',
             name='virtualhosttype',
-            field=models.ForeignKey(to='frontend.VirtualHostType'),
+            field=models.ForeignKey(verbose_name='Template', to='frontend.VirtualHostType'),
             preserve_default=True,
         ),
     ]

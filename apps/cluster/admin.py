@@ -9,13 +9,14 @@ def set_disable(modeladmin, request, queryset):
     queryset.update(enabled=False)
 set_disable.short_description = u"Disable selected items"
 
-class MemberAdmin(admin.ModelAdmin):
+class ClusterDefaultAdmin(admin.ModelAdmin):
     actions = [set_enable,set_disable]
+
+class MemberAdmin(ClusterDefaultAdmin):
     fields = ('server', 'port', 'enabled')
     list_display = ('server', 'port', 'enabled')
 
-class ClusterAdmin(admin.ModelAdmin):
-    actions = [set_enable,set_disable]
+class ClusterAdmin(ClusterDefaultAdmin):
     list_display = ('name', 'address', 'port', 'group', 'enabled')
     fieldsets = (
         (None, {
