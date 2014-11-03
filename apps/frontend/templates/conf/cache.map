@@ -1,0 +1,3 @@
+{% for web in data %}
+{% if web.cache == True %}{{ web.name }}   1;{% endif %}
+{% endfor %}

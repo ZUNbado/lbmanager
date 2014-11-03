@@ -25,4 +25,3 @@ def apply(request):
 	template = loader.get_template('balancer/apply.html')
 	context = RequestContext(request, { 'content': content })
 	return HttpResponse(template.render(context))
-	
