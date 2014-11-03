@@ -28,6 +28,7 @@ class Config(models.Model):
     nginx_sites_dir = models.CharField(max_length=200)
     ldirectord_conf = models.CharField(max_length=200)
     varnish_dir = models.CharField(max_length=200)
+    cluster_servers = models.ManyToManyField(Server)
     enable_transfer = models.BooleanField(default=True)
     enable_reload = models.BooleanField(default=True)
 
