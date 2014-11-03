@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_jinja',
 )
 
 MIDDLEWARE_CLASSES = (
@@ -87,8 +88,11 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 TEMPLATE_LOADERS = (
+    'django_jinja.loaders.AppLoader',
+    'django_jinja.loaders.FileSystemLoader',
     'django.template.loaders.app_directories.Loader',
     'django.template.loaders.filesystem.Loader',
     'apptemplates.Loader',
 )
 
+DEFAULT_JINJA2_TEMPLATE_EXTENSION = '.j2'

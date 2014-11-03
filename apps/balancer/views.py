@@ -19,7 +19,7 @@ def apply(request):
 
         directors = Director.objects.filter(enabled=True,group=group)
 
-        tpl = loader.get_template('conf/backends.vcl')
+        tpl = loader.get_template('conf/backends.vcl.j2')
         ctx = RequestContext(request, { 'directors' : directors })
         tpl_content=tpl.render(ctx)
         FilesManager.WriteFile(tempdir+'/backend.vcl', tpl_content)

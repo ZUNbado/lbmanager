@@ -1,3 +1,0 @@
-{% for alias in data %}
-{{ alias.name }} {{ alias.domain.name }};
-{% endfor %}

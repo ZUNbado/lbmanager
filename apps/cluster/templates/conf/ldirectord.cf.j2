@@ -10,9 +10,14 @@ autoreload=yes
 quiescent=yes
 {% for cluster in clusters %}
 virtual={{ cluster.address }}:{{ cluster.port }}
-{% for member in cluster.backends.all %}{% if member.enabled == True %}    real={{ member.server.address }}:{{ member.port }} {{ cluster.mode }}{% if not forloop.last %}
-{% endif %}{% endif %}{% endfor %}{% if cluster.fallback_ip != '' %}    
-    fallback={{ cluster.fallback_ip }}:{{ cluster.fallback_port }}{% endif %}
+{%- for member in cluster.backends.all() %}
+{%- if member.enabled == True %}    
+    real={{ member.server.address }}:{{ member.port }} {{ cluster.mode }}
+{%- endif %}
+{%- endfor %}
+{%- if cluster.fallback_ip != '' %}        
+    fallback={{ cluster.fallback_ip }}:{{ cluster.fallback_port }}
+{%- endif %}
     scheduler={{ cluster.scheduler }}
     protocol={{ cluster.protocol }}
 {% endfor %}

@@ -29,7 +29,10 @@ def apply(request):
         # Obtain data
         directors = Director.objects.filter(group=group)
         domains = Domain.objects.filter(enabled=True,director=directors)
-        alias = DomainAlias.objects.filter(enabled=True,domain=domains)
+        domainalias = DomainAlias.objects.filter(enabled=True,domain=domains)
+        alias = []
+        for domain in domains: alias.append({ 'alias': domain.name, 'name': domain.name })
+        for domalias in domainalias: alias.append({ 'alias': domalias.name, 'name': domalias.domain.name })
         hostredir = HostRedir.objects.filter(enabled=True,domain=domains)
         urlredir = UrlRedir.objects.filter(enabled=True)
 
@@ -41,7 +44,7 @@ def apply(request):
             { 'name': 'redir_url.map', 'data': urlredir, 'desc': 'URL Redir' },
         ]
         for fl in files:
-            tpl = loader.get_template('conf/'+fl['name'])
+            tpl = loader.get_template('conf/'+fl['name']+'.j2')
             ctx = RequestContext(request, { 'data' : fl['data'] })
             content=tpl.render(ctx)
             FilesManager.WriteFile(temp_dir_maps+'/'+fl['name'], content)
@@ -52,7 +55,7 @@ def apply(request):
         FilesManager.DirExists(temp_dir_conf)
         files = [ 'backend.conf', 'cache.conf', 'normalize.conf', 'redir.conf', 'redir_url.conf']
         for fl in files:
-            tpl = loader.get_template('conf/'+fl)
+            tpl = loader.get_template('conf/'+fl+'.j2')
             ctx = RequestContext(request, { 'nginx_map_dir': nginx_maps_dir})
             content=tpl.render(ctx)
             FilesManager.WriteFile(temp_dir_conf+'/'+fl, content)
