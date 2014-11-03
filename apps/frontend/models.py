@@ -40,7 +40,7 @@ class VirtualHost(FrontendDefaults):
     name = models.CharField(max_length=200)
     http_ports = models.IntegerField(default=80,null=True,blank=True)
     https_ports = models.IntegerField(default=443,null=True,blank=True)
-    virtualhosttype = models.ForeignKey(VirtualHostType)
+    virtualhosttype = models.ForeignKey(VirtualHostType, verbose_name=u"Template")
     extraconf = models.TextField(null=True,blank=True)
     access_log = models.CharField(max_length=200,null=True,blank=True)
     ssl_cert = models.TextField(null=True,blank=True)

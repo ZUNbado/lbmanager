@@ -47,8 +47,8 @@ class Cluster(ClusterDefaults):
         choices=CLUSTER_MODES,
         default='gate',
     )
-    fallback_ip = models.IPAddressField(blank=True,null=True)
-    fallback_port = models.IntegerField(blank=True,null=True)
+    fallback_ip = models.IPAddressField(blank=True,null=True, verbose_name=u"IP")
+    fallback_port = models.IntegerField(blank=True,null=True, verbose_name=u"Port")
     scheduler = models.CharField(
         max_length = 5,
         choices=SCHEDULER_MODES,

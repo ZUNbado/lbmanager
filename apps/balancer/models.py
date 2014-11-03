@@ -20,11 +20,11 @@ class Backend(BalancerDefaults):
     first_byte_timeout = models.IntegerField(null=True,blank=True)
     between_bytes_timeout = models.IntegerField(null=True,blank=True)
     max_connections = models.IntegerField(null=True,blank=True)
-    probe_url = models.CharField(max_length=200,null=True,blank=True)
-    probe_timeout = models.IntegerField(null=True,blank=True)
-    probe_interval = models.IntegerField(null=True,blank=True)
-    probe_window = models.IntegerField(null=True,blank=True)
-    probe_threshold = models.IntegerField(null=True,blank=True)
+    probe_url = models.CharField(max_length=200,null=True,blank=True, verbose_name=u"URL")
+    probe_timeout = models.IntegerField(null=True,blank=True, verbose_name=u"Timeout")
+    probe_interval = models.IntegerField(null=True,blank=True, verbose_name=u"Interval")
+    probe_window = models.IntegerField(null=True,blank=True, verbose_name=u"Window")
+    probe_threshold = models.IntegerField(null=True,blank=True, verbose_name=u"Threshold")
 
 class Director(BalancerDefaults):
     TYPES = (
@@ -41,4 +41,4 @@ class Director(BalancerDefaults):
     name = models.CharField(max_length=200)
     backends = models.ManyToManyField(Backend)
     group = models.ForeignKey(Group)
-    dirtype = models.CharField(max_length=200,choices=TYPES,default='round-robin')
+    dirtype = models.CharField(max_length=200,choices=TYPES,default='round-robin', verbose_name=u"Director type")
