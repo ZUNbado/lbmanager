@@ -12,9 +12,12 @@
 {% block content %}
 <div id="content-main">
 
-{% for map in maps %}
-<h1>{{ map.file }}</h1>
+{% for group in data %}
+<h1>{{ group.group }}</h1>
+{% for map in group.maps %}
+<h2>{{ map.file }}</h2>
 <pre>{{ map.content }}</pre>
+{% endfor %}
 {% endfor %}
 
 </div>
