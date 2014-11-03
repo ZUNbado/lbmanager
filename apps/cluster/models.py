@@ -1,18 +1,22 @@
 from django.db import models
+from ..config.models import Server, Group
 
 class ClusterDefaults(models.Model):
     enabled = models.BooleanField(default=True)
-
-    def __str__(self):
-        return self.name
 
     class Meta:
         abstract = True
 
 class Member(ClusterDefaults):
-    name = models.CharField(max_length=200)
-    address = models.IPAddressField()
+    server = models.ForeignKey(Server)
     port = models.IntegerField(default=80)
+
+    def __unicode__(self):
+        return u"%s / %s:%d" % (self.server.name, self.server.address, self.port)
+
+    class Meta:
+        verbose_name_plural = "1- Member"
+
 
 class Cluster(ClusterDefaults):
     CLUSTER_MODES = (
@@ -35,6 +39,7 @@ class Cluster(ClusterDefaults):
     )
     name = models.CharField(max_length=200)
     backends = models.ManyToManyField(Member)
+    group = models.ForeignKey(Group)
     address = models.IPAddressField()
     port = models.IntegerField(default=80)
     mode = models.CharField(
@@ -59,3 +64,9 @@ class Cluster(ClusterDefaults):
         ),
         default='tcp',
     )
+
+    def __unicode__(self):
+        return u"%s" % (self.name)
+
+    class Meta:
+        verbose_name_plural = "2- Cluster"

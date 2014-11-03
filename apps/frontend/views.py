@@ -4,7 +4,6 @@ from django.shortcuts import redirect
 
 from .models import DomainAlias, Domain, HostRedir, UrlRedir
 from ..cluster.models import Member
-from ..config.models import Config
 from libs.confmanager import ConfManager, FilesManager
 
 
@@ -13,11 +12,11 @@ def apply(request):
         return redirect('/admin/login/?next=%s' % request.path)
 
     files_copy = []
-    nginx_map_dir=Config.objects.get(name='nginx_map_dir').value
-    nginx_confd_dir=Config.objects.get(name='nginx_confd_dir').value
+    #nginx_map_dir=Config.objects.get(name='nginx_map_dir').value
+    #nginx_confd_dir=Config.objects.get(name='nginx_confd_dir').value
 
     # Generate nginx maps
-    tempdir=Config.objects.get(name='tempdir').value+'/nginx/maps'
+    #tempdir=Config.objects.get(name='tempdir').value+'/nginx/maps'
     FilesManager.DirExists(tempdir)
     files = [ 
         { 'name': 'backend.map', 'object': Domain, 'desc' : 'Domains'},
@@ -37,7 +36,7 @@ def apply(request):
         files_copy.append({ 'src': tempdir+'/'+fl['name'], 'dst': nginx_map_dir+'/'+fl['name'] })
 
     # Generate nginx maps conf
-    tempdirconfd=Config.objects.get(name='tempdir').value+'/nginx/conf.d'
+    #tempdirconfd=Config.objects.get(name='tempdir').value+'/nginx/conf.d'
     FilesManager.DirExists(tempdirconfd)
     files = [ 'backend.conf', 'cache.conf', 'normalize.conf', 'redir.conf', 'redir_url.conf']
     for fl in files:
@@ -48,9 +47,9 @@ def apply(request):
         files_copy.append({ 'src': tempdirconfd+'/'+fl, 'dst': nginx_confd_dir+'/'+fl })
 
     # GET SSH DATA
-    user=Config.objects.get(name='user').value
-    password=Config.objects.get(name='password').value
-    port=Config.objects.get(name='port').value
+    #user=Config.objects.get(name='user').value
+    #password=Config.objects.get(name='password').value
+    #port=Config.objects.get(name='port').value
 
     # Copy temp data to servers
     members=Member.objects.all()

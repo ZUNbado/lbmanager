@@ -1,10 +1,32 @@
 from django.db import models
 
+class Server(models.Model):
+    name = models.CharField(max_length=200)
+    address = models.IPAddressField()
+    ssh_user = models.CharField(max_length=200)
+    ssh_password = models.CharField(max_length=200)
+    ssh_port = models.IntegerField(default=22)
+    enabled = models.BooleanField(default=True)
+
+    def __unicode__(self):
+        return u"%s" % self.name
+
+
+class Group(models.Model):
+    name = models.CharField(max_length=200)
+    enabled = models.BooleanField(default=True)
+
+    def __unicode__(self):
+        return u"%s" % self.name
+
 
 class Config(models.Model):
-	name = models.CharField(max_length=200)
-	value = models.CharField(max_length=200)
-	enabled = models.BooleanField(default=True)
+    group = models.OneToOneField(Group)
+    nginx_maps_dir = models.CharField(max_length=200)
+    nginx_conf_dir = models.CharField(max_length=200)
+    nginx_sites_dir = models.CharField(max_length=200)
+    ldirectord_conf = models.CharField(max_length=200)
+    varnish_dir = models.CharField(max_length=200)
 
-	def __str__(self):
-		return self.name
+    def __unicode__(self):
+        return u"%s" % (self.group.name)

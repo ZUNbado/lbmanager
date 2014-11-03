@@ -4,14 +4,13 @@ from django.shortcuts import redirect
 
 from .models import Director, Backend
 from ..cluster.models import Member
-from ..config.models import Config
 from libs.confmanager import ConfManager, FilesManager
 
 def apply(request):
 	if not request.user.is_authenticated():
 		return redirect('/admin/login/?next=%s' % request.path)
 
-	tempdir=Config.objects.get(name='tempdir').value+'/varnish'
+	#tempdir=Config.objects.get(name='tempdir').value+'/varnish'
 	FilesManager.DirExists(tempdir)
 
 	directors = Director.objects.filter(enabled=True)

@@ -1,7 +1,5 @@
 from django.contrib import admin
-from .models import Config
+from .models import Server, Group
 
-class ConfigAdmin(admin.ModelAdmin):
-	list_display = [ 'name', 'value', 'enabled' ]
-
-admin.site.register(Config, ConfigAdmin)
+admin.site.register(Server)
+admin.site.register(Group)
