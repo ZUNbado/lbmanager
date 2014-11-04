@@ -1,5 +1,6 @@
 from django.db import models
 from ..balancer.models import Director
+from ..cluster.models import Cluster
 
 class FrontendDefaults(models.Model):
     enabled = models.BooleanField(default=True)
@@ -38,8 +39,7 @@ class VirtualHostType(FrontendDefaults):
 
 class VirtualHost(FrontendDefaults):
     name = models.CharField(max_length=200)
-    http_ports = models.IntegerField(default=80,null=True,blank=True)
-    https_ports = models.IntegerField(default=443,null=True,blank=True)
+    clusters = models.ManyToManyField(Cluster)
     virtualhosttype = models.ForeignKey(VirtualHostType, verbose_name=u"Template")
     extraconf = models.TextField(null=True,blank=True)
     access_log = models.CharField(max_length=200,null=True,blank=True)

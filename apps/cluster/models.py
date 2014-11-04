@@ -42,6 +42,7 @@ class Cluster(ClusterDefaults):
     group = models.ForeignKey(Group)
     address = models.IPAddressField()
     port = models.IntegerField(default=80)
+    ssl = models.BooleanField(default=False)
     mode = models.CharField(
         max_length=4,
         choices=CLUSTER_MODES,

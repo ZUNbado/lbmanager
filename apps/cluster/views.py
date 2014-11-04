@@ -33,18 +33,17 @@ def apply(request):
                 members=Member.objects.filter(cluster=cluster)
                 for member in members:
                     if member.server.name not in final_members:
-                         final_members[member.server.name]=member.server
+                        final_members[member.server.name]=member.server
 
-        for member in final_members:
+        for key in final_members.keys():
+            member=final_members[key]
             if Config.objects.get(group=group).enable_transfer is  True:
                 man=ConfManager(
-                    server.address,
-                    server.ssh_user,
-                    server.ssh_password,
-                    server.ssh_port
+                    member.address,
+                    member.ssh_user,
+                    member.ssh_password,
+                    member.ssh_port
                 )
-
-                man=ConfManager(member.address,user,password,int(port))
                 man.copy(tempdir+'/ldirectord.cf','/etc/ha.d/ldirectord.cf')
                 man.close()
         final_content.append({ 'group': group.name, 'content': content })

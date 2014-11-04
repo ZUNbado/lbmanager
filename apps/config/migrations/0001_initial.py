@@ -64,7 +64,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='config',
             name='cluster_servers',
-            field=models.ManyToManyField(to='config.Server'),
+            field=models.ManyToManyField(to='config.Server', null=True, blank=True),
             preserve_default=True,
         ),
         migrations.AddField(

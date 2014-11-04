@@ -34,10 +34,10 @@ class UrlRedirAdmin(FrontendDefaultAdmin):
     list_display = [ 'name', 'url', 'enabled' ]
 
 class VirtualHostAdmin(FrontendDefaultAdmin):
-    list_display = [ 'name', 'http_ports', 'https_ports', 'virtualhosttype', 'enabled' ]
+    list_display = [ 'name', 'virtualhosttype', 'enabled' ]
     fieldsets = (
         (None, {
-            'fields': ('name', 'http_ports', 'https_ports', 'virtualhosttype', 'enabled')
+            'fields': ('name', 'virtualhosttype', 'clusters', 'enabled')
         }),
         ('SSL', {
             'classes': ('collapse',),

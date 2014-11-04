@@ -15,6 +15,7 @@ def apply(request):
     content = []
     for group in groups:
         tempdir=temp_dir=Config.objects.get(group=group).temp_dir+'/'+str(group.id)
+        varnish_dir=temp_dir=Config.objects.get(group=group).varnish_dir
         FilesManager.DirExists(tempdir)
 
         directors = Director.objects.filter(enabled=True,group=group)
@@ -34,15 +35,15 @@ def apply(request):
                 if member.server.name not in final_members:
                     final_members[member.server.name]=member.server
 
-        for member in final_members:
+        for key in final_members.keys():
+            member=final_members[key]
+            man=ConfManager(member.server.address, member.server.ssh_user, member.server.ssh_password, member.server.ssh_port )
             if Config.objects.get(group=group).enable_transfer is  True:
-                man=ConfManager(
-                    member.server.address,
-                    member.server.ssh_user,
-                    member.server.ssh_password,
-                    member.server.ssh_port
-                )
-
+                man.copy(tempdir+'/backend.vcl',varnish_dir+'/default.vcl')
+            if Config.objects.get(group=group).enable_reload is True:
+                man.command('service varnish start')
+            man.close()
+                
 
     template = loader.get_template('balancer/apply.html')
     context = RequestContext(request, { 'content': content })
