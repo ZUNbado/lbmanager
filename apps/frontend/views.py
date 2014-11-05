@@ -88,17 +88,26 @@ def apply(request):
 
         for key in final_members.keys():
             member=final_members[key]
+            config=Config.objects.get(group=group)
+            msg = ''
             man=ConfManager( member.server.address, member.server.ssh_user, member.server.ssh_password, member.server.ssh_port )
             if man.connected:
-                if Config.objects.get(group=group).enable_transfer is  True:
+                if config.enable_transfer is  True:
                     man.command('mkdir -p '+nginx_maps_dir)
                     man.command('mkdir -p '+nginx_conf_dir)
                     for fl in files_copy:
                         man.copy(fl['src'],fl['dst'])
-                if Config.objects.get(group=group).enable_reload is  True:
+                    msg = "Files transferred"
+                else:
+                    msg = "Transfer files disabled"
+
+                if config.enable_reload is  True:
                     man.command('service nginx reload')
+                    msg = msg + "Service restarted"
+                else:
+                    msg = msg + "Reload services disabled"
+
                 man.close()
-                msg = "Changes applied correctly"
             else:
                 msg = "Error connecting host: %s" % man.error_msg
             status.append({ 'name': member.name, 'msg': msg })

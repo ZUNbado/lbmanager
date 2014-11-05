@@ -16,6 +16,13 @@
 <pre>{{ con.content }}</pre>
 {% endfor %}
 
+<h3>Status results</h3>
+<table>
+<tr><td>Host</td><td>Message</td></tr>
+{% for stat in status %}
+<tr><td>{{ stat.name }}</td><td>{{ stat.msg }}</td></tr>
+{% endfor %}
+</table>
 </div>
 {% endblock %}
 

@@ -13,6 +13,7 @@ def apply(request):
 
     groups = Group.objects.filter(enabled=True)
     content = []
+    status = []
     for group in groups:
         tempdir=temp_dir=Config.objects.get(group=group).temp_dir+'/'+str(group.id)
         varnish_dir=temp_dir=Config.objects.get(group=group).varnish_dir
@@ -37,14 +38,28 @@ def apply(request):
 
         for key in final_members.keys():
             member=final_members[key]
+            config=Config.objects.get(group=group)
+            msg = ''
             man=ConfManager(member.server.address, member.server.ssh_user, member.server.ssh_password, member.server.ssh_port )
-            if Config.objects.get(group=group).enable_transfer is  True:
-                man.copy(tempdir+'/backend.vcl',varnish_dir+'/default.vcl')
-            if Config.objects.get(group=group).enable_reload is True:
-                man.command('service varnish start')
+            if man.connected:
+                if config.enable_transfer is  True:
+                    man.copy(tempdir+'/backend.vcl',varnish_dir+'/default.vcl')
+                    msg = "Files transferred"
+                else:
+                    msg = "Transfer files disabled"
+
+                if config.enable_reload is True:
+                    man.command('service varnish start')
+                    msg = msg + "Service restarted"
+                else:
+                    msg = msg + "Reload services disabled"
+            else:
+                msg = "Error connecting host: %s" % man.error_msg
+
             man.close()
+            status.append({ 'name': member.name, 'msg': msg })
                 
 
     template = loader.get_template('balancer/apply.html')
-    context = RequestContext(request, { 'content': content })
+    context = RequestContext(request, { 'content': content, 'status': status })
     return HttpResponse(template.render(context))
