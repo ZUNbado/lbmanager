@@ -7,6 +7,8 @@ class ConfManager():
         self.user=user
         self.passwd=passwd
         self.port=port
+        self.connected=False
+        self.error_msg=None
         self.ssh=None
         self.ftp=None
         self.connect()
@@ -14,8 +16,13 @@ class ConfManager():
     def connect(self):
         ssh = paramiko.SSHClient()
         ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-        ssh.connect(self.host, username=self.user, password=self.passwd, port=self.port)
-        self.ssh=ssh
+        try:
+            ssh.connect(self.host, username=self.user, password=self.passwd, port=self.port, timeout=5)
+            self.ssh=ssh
+            self.connected=True
+        except Exception, e:
+            self.connected=False
+            self.error_msg=e
 
     def copy(self,src,dst):
         ftp=self.ssh.open_sftp()

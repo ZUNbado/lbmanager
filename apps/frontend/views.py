@@ -16,6 +16,7 @@ def apply(request):
 
     groups = Group.objects.filter(enabled=True)
     data_tpl = []
+    status = []
     for group in groups:
 
         files_copy=[]
@@ -88,19 +89,26 @@ def apply(request):
         for key in final_members.keys():
             member=final_members[key]
             man=ConfManager( member.server.address, member.server.ssh_user, member.server.ssh_password, member.server.ssh_port )
-            if Config.objects.get(group=group).enable_transfer is  True:
-                man.command('mkdir -p '+nginx_maps_dir)
-                man.command('mkdir -p '+nginx_conf_dir)
-                for fl in files_copy:
-                    man.copy(fl['src'],fl['dst'])
-            if Config.objects.get(group=group).enable_reload is  True:
-                man.command('service nginx reload')
-            man.close()
+            if man.connected:
+                if Config.objects.get(group=group).enable_transfer is  True:
+                    man.command('mkdir -p '+nginx_maps_dir)
+                    man.command('mkdir -p '+nginx_conf_dir)
+                    for fl in files_copy:
+                        man.copy(fl['src'],fl['dst'])
+                if Config.objects.get(group=group).enable_reload is  True:
+                    man.command('service nginx reload')
+                man.close()
+                msg = "Changes applied correctly"
+            else:
+                msg = "Error connecting host: %s" % man.error_msg
+            status.append({ 'name': member.name, 'msg': msg })
+
         data_tpl.append({ 'group': group.name, 'maps': maps })
     
     template = loader.get_template('frontend/apply.html')
     context = RequestContext(request, {
         'data': data_tpl,
+        'status': status,
     })
 
     return HttpResponse(template.render(context))
