@@ -1,5 +1,6 @@
 import paramiko
 import os
+import socket, struct
 
 class ConfManager():
     def __init__(self, host, user, passwd, port):
@@ -12,6 +13,9 @@ class ConfManager():
         self.ssh=None
         self.ftp=None
         self.connect()
+        self.stdin=None
+        self.stdout=None
+        self.stderr=None
 
     def connect(self):
         ssh = paramiko.SSHClient()
@@ -30,11 +34,28 @@ class ConfManager():
         self.ftp=ftp
 
     def command(self,command):
-        stdin, stdout, stderr = self.ssh.exec_command(command)
+        self.stdin, self.stdout, self.stderr = self.ssh.exec_command(command)
 
     def close(self):
         self.ssh.close()
 
+    def IPToNum(self,ip):
+        packedIP = socket.inet_aton(ip)
+        return struct.unpack("!L", packedIP)[0]
+
+    def NumToIP(self,num):
+        return socket.inet_ntoa(struct.pack('!L', num))
+        
+    def checkAndAddIP(self,ip):
+        self.command("ip addr show lo |grep %s" % (ip))
+        count=0
+        for line in self.stdout.readlines(): count=count+1
+
+        if count == 0:
+            # ADD IP
+            print "Adding IP %s" % ip
+            command="ifconfig lo:%s %s netmask 255.255.255.255" % (self.IPToNum(ip), ip)
+            self.command(command)
 
 class FilesManager():
     @staticmethod

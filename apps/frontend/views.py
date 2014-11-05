@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from django.template import RequestContext, loader
 from django.shortcuts import redirect
 from jinja2 import Template as jinja_template
+from django.db.models import Count
 
 from .models import DomainAlias, Domain, HostRedir, UrlRedir, VirtualHost
 from ..cluster.models import Member, Cluster
@@ -104,6 +105,11 @@ def apply(request):
                 if config.enable_reload is  True:
                     man.command('service nginx reload')
                     msg = msg + "Service restarted"
+
+                    # Check Cluster IP's
+                    for cluster in Cluster.objects.filter(enabled=True,group=group).values('address').distinct():
+                        print "Cluster IP: %s ServerName: %s ServerIP: %s" % (cluster['address'], member.name, member.server.address )
+                        man.checkAndAddIP(cluster['address'])
                 else:
                     msg = msg + "Reload services disabled"
 
