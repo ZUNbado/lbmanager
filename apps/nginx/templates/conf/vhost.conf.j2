@@ -1,17 +1,38 @@
 server {
 {%- for cluster in virtualhost.cluster.all() %}
-        listen {{ cluster.address }}:{{ cluster.port }}{% if cluster.ssl == True %} ssl{% endif %};
+    listen {{ cluster.address }}:{{ cluster.port }}{% if cluster.ssl == True %} ssl{% endif %};
 {%- endfor %}
 
+    {%- if domains|length > 0 %}
+    server_name {{ domains|map(attribute='name')|join(', ') }}{% if aliases|length > 0 %}, {{ aliases|map(attribute='name')|join(', ')}}{% endif %};
+    {%- endif %}
+
     map http_host $backend {
+    {%- for domain in domains %}
+        {{ domain.name }}   {{ domain.director.name }};
+    {%- endfor %}
     }
 
     map $http_host $normalized {
+    {%- for domain in domains %}
+        {{ domain.name }} {{ domain.name }};
+    {%- endfor %}
+    {%- for alias in aliases %}
+        {{ alias.name }} {{ alias.domain.name }};
+    {%- endfor %}
     }
     map $http_host $cache {
+    {%- for domain in domains %}
+        {%- if domain.cache == True %}
+        {{ domain.name }}   1;
+        {%- endif %}
+    {%- endfor %}
     }
 
     map $http_host $redir {
+    {%- for redir in hostRedirs %}
+        {{ redir.domain.name }} {{ redir.name }};
+    {%- endfor %}
     }
     
     map $http_host $site_redir {
@@ -36,23 +57,21 @@ server {
         proxy_buffering     off;
         gzip                off;
         proxy_redirect      off;
-        {% elif location.backend_type == 'static' %}
+        {%- elif location.backend_type == 'static' %}
         root   {{ location.path_fs }}/$host;
         index  index.html index.htm;
-        {% endif %}
-
-
-        {% if ip_allow_enabled == True and location.auth_basic_enabled == True %}
+        {%- endif %}
+        {%- if ip_allow_enabled == True and location.auth_basic_enabled == True %}
         satisfy any;
-        {% endif %}
-        {% if ip_allow_enabled == True %}
+        {%- endif %}
+        {%- if ip_allow_enabled == True %}
         allow 192.168.1.0/24;
         deny  all;
-        {% endif %}
-        {% if location.auth_basic_enabled == True %}
+        {%- endif %}
+        {%- if location.auth_basic_enabled == True %}
             auth_basic  "{{ location.auth_basic_msg }}";
             auth_basic_user_file PERDEFINIR
-        {% endif %}
+        {%- endif %}
     }
 {%- endfor %}
 

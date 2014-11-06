@@ -1,6 +1,7 @@
 from django.db import models
 from ..balancer.models import Director
 from ..cluster.models import Cluster
+from ..nginx.models import NginxVirtualHost
 
 class FrontendDefaults(models.Model):
     enabled = models.BooleanField(default=True)
@@ -12,6 +13,7 @@ class FrontendDefaults(models.Model):
 
 class Domain(FrontendDefaults):
     name = models.CharField(max_length=200)
+    virtual_host = models.ForeignKey(NginxVirtualHost)
     director = models.ForeignKey(Director)
     cache = models.BooleanField(default=True)
     

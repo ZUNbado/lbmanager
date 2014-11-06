@@ -17,10 +17,10 @@ class MemberAdmin(ClusterDefaultAdmin):
     list_display = ('server', 'port', 'enabled')
 
 class ClusterAdmin(ClusterDefaultAdmin):
-    list_display = ('name', 'address', 'port', 'group', 'enabled')
+    list_display = ('name', 'address', 'port', 'group', 'ssl', 'enabled')
     fieldsets = (
         (None, {
-            'fields': ('name', 'backends', 'group', 'address', 'port', 'mode', 'enabled')
+            'fields': ('name', 'backends', 'group', 'address', 'port', 'mode', 'ssl', 'enabled')
         }),
         ('Advanced options', {
             'classes': ('collapse',),

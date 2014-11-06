@@ -1,6 +1,7 @@
 from django.db import models
 from ..config.models import Group
 from ..cluster.models import Cluster
+from ..balancer.models import Director
 
 class NginxDefaults(models.Model):
     enabled = models.BooleanField(default=True)
@@ -26,12 +27,14 @@ class Location(NginxDefaults):
     name = models.CharField(max_length=200)
     path_url = models.CharField(max_length=200)
     backend_type = models.CharField(max_length=5,choices=TYPES,default='proxy')
+    director = models.ManyToManyField(Director,null=True,blank=True)
     path_fs = models.CharField(max_length=200,null=True,blank=True)
     auth_basic_enabled = models.BooleanField(default=False)
     auth_basic_msg = models.CharField(max_length=200,null=True,blank=True)
     users = models.ManyToManyField(AuthUser,null=True,blank=True)
     ip_allow_enabled = models.BooleanField(default=False)
     ip_allow_list = models.CharField(max_length=200,null=True,blank=True)
+
 
 class NginxVirtualHost(NginxDefaults):
     name = models.CharField(max_length=200)
