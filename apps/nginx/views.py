@@ -7,7 +7,7 @@ from jinja2 import Template as jinja_template
 from .models import NginxVirtualHost
 from ..config.models import Group, Config, Server
 from ..cluster.models import Cluster
-from ..frontend.models import Domain, DomainAlias, HostRedir, UrlRedir
+from ..web.models import Domain, DomainAlias, HostRedir, UrlRedir
 
 def apply(request):
     if not request.user.is_authenticated():

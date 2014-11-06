@@ -33,7 +33,7 @@ INSTALLED_APPS = (
     'django_admin_bootstrapped.bootstrap3',
     'django_admin_bootstrapped',
     'apps.config',
-    'apps.frontend',
+    'apps.web',
     'apps.balancer',
     'apps.cluster',
     'apps.nginx',

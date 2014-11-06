@@ -51,6 +51,7 @@ server {
     }
 {%- for location in virtualhost.location.all() %}
     location {{ location.path_url }} {
+    {%- if location.path_url == "/" %}
         {%- if location.backend_type == 'proxy' %}
         proxy_pass          http://127.0.0.1:6081;
         proxy_set_header    Host                    $normalized_{{ virtualhost.id }};
@@ -66,16 +67,20 @@ server {
         root   {{ location.path_fs }}/$normalized_{{ virtualhost.id }};
         index  index.html index.htm;
         {%- endif %}
-        {%- if ip_allow_enabled == True and location.auth_basic_enabled == True %}
+    {%- endif %}
+        {%- if location.ip_allow_enabled == True and location.auth_basic_enabled == True %}
         satisfy any;
         {%- endif %}
-        {%- if ip_allow_enabled == True %}
-        allow 192.168.1.0/24;
+        {%- if location.ip_allow_enabled == True %}
+        {%- if location.ip_allow_list != '' %}
+        allow {% for c in location.ip_allow_list|list() %}{% if c !=',' %}{{ c }}{% else %};
+        allow {% endif %}{%- endfor %};
+        {%- endif %}
         deny  all;
         {%- endif %}
         {%- if location.auth_basic_enabled == True %}
-            auth_basic  "{{ location.auth_basic_msg }}";
-            auth_basic_user_file PERDEFINIR
+        auth_basic  "{{ location.auth_basic_msg }}";
+        auth_basic_user_file PERDEFINIR
         {%- endif %}
     }
 {%- endfor %}

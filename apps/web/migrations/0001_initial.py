@@ -8,7 +8,8 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('balancer', '0001_initial'),
-        ('cluster', '0001_initial'),
+        ('nginx', '0001_initial'),
+        ('cluster', '__first__'),
     ]
 
     operations = [
@@ -20,6 +21,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=200)),
                 ('cache', models.BooleanField(default=True)),
                 ('director', models.ForeignKey(to='balancer.Director')),
+                ('virtual_host', models.ForeignKey(to='nginx.NginxVirtualHost')),
             ],
             options={
                 'verbose_name_plural': '3- Domain',
@@ -32,7 +34,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('enabled', models.BooleanField(default=True)),
                 ('name', models.CharField(max_length=200)),
-                ('domain', models.ForeignKey(to='frontend.Domain')),
+                ('domain', models.ForeignKey(to='web.Domain')),
             ],
             options={
                 'verbose_name_plural': '4- Domain Alias',
@@ -45,7 +47,7 @@ class Migration(migrations.Migration):
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('enabled', models.BooleanField(default=True)),
                 ('name', models.CharField(max_length=200)),
-                ('domain', models.ForeignKey(to='frontend.Domain')),
+                ('domain', models.ForeignKey(to='web.Domain')),
             ],
             options={
                 'verbose_name_plural': '5- Host Redir',
@@ -59,6 +61,7 @@ class Migration(migrations.Migration):
                 ('enabled', models.BooleanField(default=True)),
                 ('name', models.CharField(max_length=200)),
                 ('url', models.CharField(max_length=200)),
+                ('virtual_host', models.ForeignKey(to='nginx.NginxVirtualHost')),
             ],
             options={
                 'verbose_name_plural': '6- URL Redir',
@@ -99,7 +102,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='virtualhost',
             name='virtualhosttype',
-            field=models.ForeignKey(verbose_name='Template', to='frontend.VirtualHostType'),
+            field=models.ForeignKey(verbose_name='Template', to='web.VirtualHostType'),
             preserve_default=True,
         ),
     ]

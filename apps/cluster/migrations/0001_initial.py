@@ -19,6 +19,7 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=200)),
                 ('address', models.IPAddressField()),
                 ('port', models.IntegerField(default=80)),
+                ('ssl', models.BooleanField(default=False)),
                 ('mode', models.CharField(default=b'gate', max_length=4, choices=[(b'gate', b'Direct'), (b'ipip', b'Tunel IPIP'), (b'masq', b'Masquerading')])),
                 ('fallback_ip', models.IPAddressField(null=True, verbose_name='IP', blank=True)),
                 ('fallback_port', models.IntegerField(null=True, verbose_name='Port', blank=True)),
