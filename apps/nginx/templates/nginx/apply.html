@@ -1,0 +1,33 @@
+{% extends "admin:admin/base_site.html" %}
+{% load i18n admin_static %}
+
+{% block extrastyle %}{{ block.super }}<link rel="stylesheet" type="text/css" href="{% static "admin/css/dashboard.css" %}" />{% endblock %}
+
+{% block coltype %}colMS{% endblock %}
+
+{% block bodyclass %}{{ block.super }} dashboard{% endblock %}
+
+{% block breadcrumbs %}{% endblock %}
+
+{% block content %}
+<div id="content-main">
+
+{% for group in data %}
+<h1>{{ group.group }}</h1>
+{% for map in group.maps %}
+<h2>{{ map.file }}</h2>
+<pre>{{ map.content }}</pre>
+{% endfor %}
+{% endfor %}
+
+
+<h3>Status results</h3>
+<table>
+<tr><td>Host</td><td>Message</td></tr>
+{% for stat in status %}
+<tr><td>{{ stat.name }}</td><td>{{ stat.msg }}</td></tr>
+{% endfor %}
+</table>
+</div>
+{% endblock %}
+
