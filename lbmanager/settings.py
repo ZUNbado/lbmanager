@@ -36,6 +36,7 @@ INSTALLED_APPS = (
     'apps.frontend',
     'apps.balancer',
     'apps.cluster',
+    'apps.nginx',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
