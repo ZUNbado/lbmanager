@@ -1,3 +1,36 @@
+map http_host $backend_{{ virtualhost.id }} {
+{%- for domain in domains %}
+    {{ domain.name }}   {{ domain.director.name }};
+{%- endfor %}
+}
+
+map $http_host $normalized_{{ virtualhost.id }} {
+{%- for domain in domains %}
+    {{ domain.name }} {{ domain.name }};
+{%- endfor %}
+{%- for alias in aliases %}
+    {{ alias.name }} {{ alias.domain.name }};
+{%- endfor %}
+}
+map $http_host $cache_{{ virtualhost.id }} {
+{%- for domain in domains %}
+{%- if domain.cache == True %}
+    {{ domain.name }}   1;
+{%- endif %}
+{%- endfor %}
+}
+map $http_host $redir_{{ virtualhost.id }} {
+{%- for redir in hostRedirs %}
+    {{ redir.domain.name }} {{ redir.name }};
+{%- endfor %}
+}
+
+map $http_host $site_redir_{{ virtualhost.id }} {
+{%- for url in urlRedir %}
+    {{ url.name }} {{ url.url }};
+{%- endfor %}
+}
+
 server {
 {%- for cluster in virtualhost.cluster.all() %}
     listen {{ cluster.address }}:{{ cluster.port }}{% if cluster.ssl == True %} ssl{% endif %};
@@ -7,58 +40,30 @@ server {
     server_name {{ domains|map(attribute='name')|join(', ') }}{% if aliases|length > 0 %}, {{ aliases|map(attribute='name')|join(', ')}}{% endif %};
     {%- endif %}
 
-    map http_host $backend {
-    {%- for domain in domains %}
-        {{ domain.name }}   {{ domain.director.name }};
-    {%- endfor %}
-    }
 
-    map $http_host $normalized {
-    {%- for domain in domains %}
-        {{ domain.name }} {{ domain.name }};
-    {%- endfor %}
-    {%- for alias in aliases %}
-        {{ alias.name }} {{ alias.domain.name }};
-    {%- endfor %}
+    if ( $redir_{{ virtualhost.id }} ) {
+        rewrite ^(.*) $scheme://$redir_{{ virtualhost.id }}$1 last;
+        return {{ virtualhost.redirect_type }};
     }
-    map $http_host $cache {
-    {%- for domain in domains %}
-        {%- if domain.cache == True %}
-        {{ domain.name }}   1;
-        {%- endif %}
-    {%- endfor %}
-    }
-
-    map $http_host $redir {
-    {%- for redir in hostRedirs %}
-        {{ redir.domain.name }} {{ redir.name }};
-    {%- endfor %}
-    }
-    
-    map $http_host $site_redir {
-    }
-
-    if ( $redir ) {
-        rewrite ^(.*) $scheme://$redir$1 permanent;
-    }
-    if ( $site_redir ){
-        rewrite ^(.*) $site_redir permanent;
+    if ( $site_redir_{{ virtualhost.id }} ){
+        rewrite ^(.*) $site_redir_{{ virtualhost.id }} last;
+        return {{ virtualhost.redirect_type }};
     }
 {%- for location in virtualhost.location.all() %}
     location {{ location.path_url }} {
         {%- if location.backend_type == 'proxy' %}
         proxy_pass          http://127.0.0.1:6081;
-        proxy_set_header    Host                    $normalized;
+        proxy_set_header    Host                    $normalized_{{ virtualhost.id }};
         proxy_set_header    X-Real-IP               $remote_addr;
         proxy_set_header    X-Forwarded-For         $proxy_add_x_forwarded_for;
         proxy_set_header    X-Forwarded-Proto       $scheme;
-        proxy_set_header    X-vns-director          $backend;
-        proxy_set_header    X-enablecache           $cache;
+        proxy_set_header    X-vns-director          $backend_{{ virtualhost.id }};
+        proxy_set_header    X-enablecache           $cache_{{ virtualhost.id }};
         proxy_buffering     off;
         gzip                off;
         proxy_redirect      off;
         {%- elif location.backend_type == 'static' %}
-        root   {{ location.path_fs }}/$host;
+        root   {{ location.path_fs }}/$normalized_{{ virtualhost.id }};
         index  index.html index.htm;
         {%- endif %}
         {%- if ip_allow_enabled == True and location.auth_basic_enabled == True %}
@@ -74,5 +79,4 @@ server {
         {%- endif %}
     }
 {%- endfor %}
-
 }

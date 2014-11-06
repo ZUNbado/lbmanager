@@ -37,11 +37,16 @@ class Location(NginxDefaults):
 
 
 class NginxVirtualHost(NginxDefaults):
+    REDIRECTS = (
+        (301, 'Permanent'),
+        (302, 'Temporal'),
+    )
     name = models.CharField(max_length=200)
     cluster = models.ManyToManyField(Cluster)
     location = models.ManyToManyField(Location)
     extraconf = models.TextField(null=True,blank=True)
     access_log = models.CharField(max_length=200,null=True,blank=True)
+    redirect_type = models.IntegerField(choices=REDIRECTS,default=301)
     ssl_cert = models.TextField(null=True,blank=True)
     ssl_key = models.TextField(null=True,blank=True)
     ssl_ca = models.TextField(null=True,blank=True)

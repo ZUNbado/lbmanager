@@ -7,7 +7,7 @@ from jinja2 import Template as jinja_template
 from .models import NginxVirtualHost
 from ..config.models import Group, Config, Server
 from ..cluster.models import Cluster
-from ..frontend.models import Domain, DomainAlias, HostRedir
+from ..frontend.models import Domain, DomainAlias, HostRedir, UrlRedir
 
 def apply(request):
     if not request.user.is_authenticated():
@@ -21,8 +21,9 @@ def apply(request):
                 domains = Domain.objects.filter(enabled=True,virtual_host=vhost)
                 aliases = DomainAlias.objects.filter(enabled=True,domain=domains)
                 hostRedirs = HostRedir.objects.filter(enabled=True,domain=domains)
+                urlRedirs = UrlRedir.objects.filter(enabled=True,virtual_host=vhost)
                 tpl = loader.get_template('conf/vhost.conf.j2')
-                ctx = RequestContext(request, { 'virtualhost': vhost, 'domains': domains, 'aliases': aliases, 'hostRedirs': hostRedirs })
+                ctx = RequestContext(request, { 'virtualhost': vhost, 'domains': domains, 'aliases': aliases, 'hostRedirs': hostRedirs, 'urlRedirs': urlRedirs })
                 content=tpl.render(ctx)
                 vfiles.append({ 'file': vhost.name, 'content': content })
 

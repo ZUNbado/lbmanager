@@ -62,6 +62,7 @@ class HostRedir(FrontendDefaults):
 class UrlRedir(FrontendDefaults):
     name = models.CharField(max_length=200)
     url = models.CharField(max_length=200)
+    virtual_host = models.ForeignKey(NginxVirtualHost)
 
     class Meta:
         verbose_name_plural = "6- URL Redir"
