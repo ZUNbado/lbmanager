@@ -53,13 +53,13 @@ def apply(request):
                     msg = msg + "Service restarted"
                 else:
                     msg = msg + "Reload services disabled"
+
+                man.close()
             else:
                 msg = "Error connecting host: %s" % man.error_msg
 
-            man.close()
             status.append({ 'name': member.name, 'msg': msg })
                 
-
     template = loader.get_template('balancer/apply.html')
     context = RequestContext(request, { 'content': content, 'status': status })
     return HttpResponse(template.render(context))
