@@ -52,10 +52,27 @@ class ConfManager():
         for line in self.stdout.readlines(): count=count+1
 
         if count == 0:
-            # ADD IP
-            print "Adding IP %s" % ip
-            command="ifconfig lo:%s %s netmask 255.255.255.255" % (self.IPToNum(ip), ip)
+            command="ip addr add %s/32 dev lo label lo:%s" % (ip, self.IPToNum(ip))
+            #command="ifconfig lo:%s %s netmask 255.255.255.255" % (self.IPToNum(ip), ip)
             self.command(command)
+
+    def checkAndConfigIP(self,ip,lodef='iface lo inet loopback',netfile='/etc/network/interfaces'):
+        conf = "up ip addr add %s/32 dev lo label lo:%s" % (ip, self.IPToNum(ip))
+        match = False
+        addafter = None
+        sftp=self.ssh.open_sftp()
+        with sftp.file(netfile, 'r') as file:
+            data=file.readlines()
+            for lineno, cur_line in enumerate(data):
+                if cur_line.strip('\t\r\n ') == lodef:
+                    addafter = lineno
+                if cur_line.strip('\t\r\n ') == conf:
+                    match = True
+
+        if match == False:
+            data.insert(addafter + 1, str("\t"+conf+"\n"))
+            with sftp.file(netfile, 'w') as write:
+                write.writelines(data)
 
 class FilesManager():
     @staticmethod

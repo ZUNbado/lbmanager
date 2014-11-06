@@ -99,6 +99,9 @@ def apply(request):
                     for fl in files_copy:
                         man.copy(fl['src'],fl['dst'])
                     msg = "Files transferred"
+
+                    for cluster in Cluster.objects.filter(enabled=True,group=group).values('address').distinct():
+                        man.checkAndConfigIP(cluster['address'])
                 else:
                     msg = "Transfer files disabled"
 
@@ -106,9 +109,7 @@ def apply(request):
                     man.command('service nginx reload')
                     msg = msg + "Service restarted"
 
-                    # Check Cluster IP's
                     for cluster in Cluster.objects.filter(enabled=True,group=group).values('address').distinct():
-                        print "Cluster IP: %s ServerName: %s ServerIP: %s" % (cluster['address'], member.name, member.server.address )
                         man.checkAndAddIP(cluster['address'])
                 else:
                     msg = msg + "Reload services disabled"
