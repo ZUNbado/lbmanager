@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Server, Group, Config
+from .models import Server, Group
 from django.conf.urls import patterns
 from django.shortcuts import get_object_or_404
 
@@ -35,26 +35,9 @@ class ServerAdmin(ConfigDefaultAdmin):
     fields = [ 'name', 'address', 'ssh_user', 'ssh_password', 'ssh_port', 'enabled' ]
 
 class GroupAdmin(ConfigDefaultAdmin):
-    fields = [ 'name', 'enabled' ]
-    list_display = [ 'name', 'enabled' ]
-
-class ConfigAdmin(ConfigDefaultAdmin):
     actions = [set_enable_transfer,set_disable_transfer,set_enable_reload,set_disable_reload]
-    fields = [ 'group', 'temp_dir', 'nginx_sites_dir', 'ldirectord_conf', 'varnish_dir', 'enable_transfer', 'enable_reload', 'enabled' ]
-    list_display = [ 'group', 'enable_transfer', 'enable_reload', 'enabled' ]
-
-    def get_urls(self):
-        urls = super(ConfigAdmin, self).get_urls()
-        my_urls = patterns('', 
-            (r'^enable/(?P<pk>\d+)/$', self.set_enable)
-        )
-        return my_urls + urls
-
-    def set_enable(self, request):
-        obj = get_object_or_404(Config, pk=pk)
-        obj.enable=True
-        obj.save()
+    fields = [ 'name', 'temp_dir', 'nginx_sites_dir', 'ldirectord_conf', 'varnish_dir', 'enable_transfer', 'enable_reload', 'enabled' ]
+    list_display = [ 'name', 'enable_transfer', 'enable_reload', 'enabled' ]
 
 admin.site.register(Server, ServerAdmin)
 admin.site.register(Group, GroupAdmin)
-admin.site.register(Config, ConfigAdmin)

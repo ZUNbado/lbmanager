@@ -3,7 +3,7 @@ from django.template import RequestContext, loader
 from django.shortcuts import redirect
 
 from ..cluster.models import Member, Cluster
-from ..config.models import Config, Group, Server
+from ..config.models import Group, Server
 from libs.confmanager import ConfManager, FilesManager
 
 def apply(request):
@@ -13,7 +13,7 @@ def apply(request):
     final_content = []
     status = []
     for group in Group.objects.filter(enabled=True):
-        tempdir=temp_dir=Config.objects.get(group=group).temp_dir+'/'+str(group.id)
+        tempdir=group.temp_dir+'/'+str(group.id)
         FilesManager.DirExists(tempdir)
 
         clusters = Cluster.objects.filter(enabled=True,group=group)
@@ -24,7 +24,7 @@ def apply(request):
         FilesManager.WriteFile(tempdir+'/ldirectord.cf', content)
 
         final_members = {}
-        servers=Config.objects.get(group=group).cluster_servers
+        servers=group.cluster_servers
         for server in servers.all(): 
             final_members[server.name]=server
         if len(final_members) == 0:
@@ -38,18 +38,17 @@ def apply(request):
 
         for key in final_members.keys():
             member=final_members[key]
-            config=Config.objects.get(group=group)
-            if config.enable_transfer is True or config.enable_reload is True:
+            if group.enable_transfer is True or group.enable_reload is True:
                 man=ConfManager(member.address, member.ssh_user, member.ssh_password, member.ssh_port )
                 msg = ''
                 if man.connected:
-                    if config.enable_transfer is True:
+                    if group.enable_transfer is True:
                         man.copy(tempdir+'/ldirectord.cf','/etc/ha.d/ldirectord.cf')
                         msg = "Files transferred"
                     else:
                         msg = "Transfer files disabled"
 
-                    if config.enable_reload is True:
+                    if group.enable_reload is True:
                         man.command('service ldirectord restart')
                         msg = msg + "Service restarted"
                     else:

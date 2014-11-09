@@ -23,15 +23,35 @@ class WebDefaultAdmin(admin.ModelAdmin):
 class DomainAdmin(WebDefaultAdmin):
     actions = [set_enable_cache,set_disable_cache]
     list_display = [ 'name', 'director', 'cache', 'enabled' ]
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'virtual_host', 'director', 'cache', 'enabled')
+        }),
+    )
 
 class DomainAliasAdmin(WebDefaultAdmin):
     list_display = [ 'domain', 'alias', 'enabled' ]
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'domain', 'enabled'),
+        }),
+    ) 
 
 class HostRedirAdmin(WebDefaultAdmin):
     list_display = [ 'name', 'domain', 'enabled' ]
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'domain', 'enabled'),
+        }),
+    )
 
 class UrlRedirAdmin(WebDefaultAdmin):
     list_display = [ 'name', 'url', 'enabled' ]
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'url', 'virtual_host', 'enabled'),
+        }),
+    )
 
 admin.site.register(Domain, DomainAdmin)
 admin.site.register(DomainAlias, DomainAliasAdmin)

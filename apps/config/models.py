@@ -13,16 +13,10 @@ class Server(ConfigDefaultAdmin):
     ssh_port = models.IntegerField(default=22,null=True,blank=True)
 
     class Meta:
-        verbose_name_plural = '3- Server'
+        verbose_name_plural = '2- Server'
 
 class Group(ConfigDefaultAdmin):
     name = models.CharField(max_length=200)
-
-    class Meta:
-        verbose_name_plural = '1- Group'
-
-class Config(ConfigDefaultAdmin):
-    group = models.OneToOneField(Group)
     temp_dir = models.CharField(max_length=200)
     nginx_sites_dir = models.CharField(max_length=200)
     ldirectord_conf = models.CharField(max_length=200)
@@ -35,4 +29,4 @@ class Config(ConfigDefaultAdmin):
         return u"%s" % (self.group.name)
 
     class Meta:
-        verbose_name_plural = '2- Group configuration'
+        verbose_name_plural = '1- Group configuration'

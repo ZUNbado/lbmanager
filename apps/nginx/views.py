@@ -5,7 +5,7 @@ from jinja2 import Template as jinja_template
 
 
 from .models import NginxVirtualHost
-from ..config.models import Group, Config, Server
+from ..config.models import Group, Server
 from ..cluster.models import Cluster
 from ..web.models import Domain, DomainAlias, HostRedir, UrlRedir
 

@@ -21,9 +21,10 @@ class Migration(migrations.Migration):
             bases=(models.Model,),
         ),
         migrations.CreateModel(
-            name='Config',
+            name='Group',
             fields=[
                 ('configdefaultadmin_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='config.ConfigDefaultAdmin')),
+                ('name', models.CharField(max_length=200)),
                 ('temp_dir', models.CharField(max_length=200)),
                 ('nginx_sites_dir', models.CharField(max_length=200)),
                 ('ldirectord_conf', models.CharField(max_length=200)),
@@ -32,16 +33,7 @@ class Migration(migrations.Migration):
                 ('enable_reload', models.BooleanField(default=True)),
             ],
             options={
-            },
-            bases=('config.configdefaultadmin',),
-        ),
-        migrations.CreateModel(
-            name='Group',
-            fields=[
-                ('configdefaultadmin_ptr', models.OneToOneField(parent_link=True, auto_created=True, primary_key=True, serialize=False, to='config.ConfigDefaultAdmin')),
-                ('name', models.CharField(max_length=200)),
-            ],
-            options={
+                'verbose_name_plural': '2- Group configuration',
             },
             bases=('config.configdefaultadmin',),
         ),
@@ -56,19 +48,14 @@ class Migration(migrations.Migration):
                 ('ssh_port', models.IntegerField(default=22, null=True, blank=True)),
             ],
             options={
+                'verbose_name_plural': '3- Server',
             },
             bases=('config.configdefaultadmin',),
         ),
         migrations.AddField(
-            model_name='config',
+            model_name='group',
             name='cluster_servers',
             field=models.ManyToManyField(to='config.Server', null=True, blank=True),
-            preserve_default=True,
-        ),
-        migrations.AddField(
-            model_name='config',
-            name='group',
-            field=models.OneToOneField(to='config.Group'),
             preserve_default=True,
         ),
     ]

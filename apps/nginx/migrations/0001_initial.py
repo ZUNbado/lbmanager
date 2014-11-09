@@ -7,9 +7,9 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('balancer', '0001_initial'),
-        ('config', '0001_initial'),
-        ('cluster', '0001_initial'),
+        ('config', '__first__'),
+        ('balancer', '__first__'),
+        ('cluster', '__first__'),
     ]
 
     operations = [
@@ -22,7 +22,7 @@ class Migration(migrations.Migration):
                 ('password', models.CharField(max_length=200)),
             ],
             options={
-                'abstract': False,
+                'verbose_name_plural': '3- Autenticate users',
             },
             bases=(models.Model,),
         ),
@@ -45,7 +45,7 @@ class Migration(migrations.Migration):
                 ('enabled', models.BooleanField(default=True)),
                 ('name', models.CharField(max_length=200)),
                 ('path_url', models.CharField(max_length=200)),
-                ('backend_type', models.CharField(default=b'proxy', max_length=5, choices=[(b'proxy', b'Proxy'), (b'files', b'Static')])),
+                ('backend_type', models.CharField(default=b'proxy', max_length=5, null=True, blank=True, choices=[(b'proxy', b'Proxy'), (b'files', b'Static')])),
                 ('path_fs', models.CharField(max_length=200, null=True, blank=True)),
                 ('auth_basic_enabled', models.BooleanField(default=False)),
                 ('auth_basic_msg', models.CharField(max_length=200, null=True, blank=True)),
@@ -55,7 +55,7 @@ class Migration(migrations.Migration):
                 ('users', models.ManyToManyField(to='nginx.AuthUser', null=True, blank=True)),
             ],
             options={
-                'abstract': False,
+                'verbose_name_plural': '2- Location',
             },
             bases=(models.Model,),
         ),
@@ -75,7 +75,7 @@ class Migration(migrations.Migration):
                 ('location', models.ManyToManyField(to='nginx.Location')),
             ],
             options={
-                'abstract': False,
+                'verbose_name_plural': '1- VirtualHost',
             },
             bases=(models.Model,),
         ),

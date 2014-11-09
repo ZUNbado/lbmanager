@@ -7,7 +7,7 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('config', '__first__'),
+        ('config', '0001_initial'),
     ]
 
     operations = [
@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
                 ('server', models.ForeignKey(to='config.Server')),
             ],
             options={
-                'abstract': False,
+                'verbose_name_plural': '1- Backend',
             },
             bases=(models.Model,),
         ),
@@ -46,7 +46,7 @@ class Migration(migrations.Migration):
                 ('group', models.ForeignKey(to='config.Group')),
             ],
             options={
-                'abstract': False,
+                'verbose_name_plural': '2- Director',
             },
             bases=(models.Model,),
         ),
