@@ -1,0 +1,84 @@
+[
+{
+   "fields": {
+      "enabled": true,
+      "port": 80,
+      "server": 4
+   },
+   "model": "cluster.member",
+   "pk": 1
+},
+{
+   "fields": {
+      "enabled": true,
+      "port": 80,
+      "server": 3
+   },
+   "model": "cluster.member",
+   "pk": 2
+},
+{
+   "fields": {
+      "enabled": true,
+      "port": 443,
+      "server": 4
+   },
+   "model": "cluster.member",
+   "pk": 3
+},
+{
+   "fields": {
+      "enabled": true,
+      "port": 443,
+      "server": 3
+   },
+   "model": "cluster.member",
+   "pk": 4
+},
+{
+   "fields": {
+      "group": 1,
+      "name": "cluster80",
+      "fallback_port": null,
+      "enabled": true,
+      "fallback_ip": "",
+      "persistent": 300,
+      "ssl": false,
+      "netmask": "",
+      "backends": [
+         1,
+         2
+      ],
+      "mode": "gate",
+      "scheduler": "wrr",
+      "address": "192.168.1.10",
+      "protocol": "tcp",
+      "port": 80
+   },
+   "model": "cluster.cluster",
+   "pk": 1
+},
+{
+   "fields": {
+      "group": 1,
+      "name": "cluster443",
+      "fallback_port": null,
+      "enabled": true,
+      "fallback_ip": "",
+      "persistent": 300,
+      "ssl": false,
+      "netmask": "",
+      "backends": [
+         3,
+         4
+      ],
+      "mode": "gate",
+      "scheduler": "wrr",
+      "address": "192.168.1.10",
+      "protocol": "tcp",
+      "port": 443
+   },
+   "model": "cluster.cluster",
+   "pk": 2
+}
+]

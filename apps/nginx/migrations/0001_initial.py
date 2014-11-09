@@ -8,8 +8,8 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('balancer', '0001_initial'),
-        ('config', '__first__'),
-        ('cluster', '__first__'),
+        ('config', '0001_initial'),
+        ('cluster', '0001_initial'),
     ]
 
     operations = [
@@ -51,7 +51,7 @@ class Migration(migrations.Migration):
                 ('auth_basic_msg', models.CharField(max_length=200, null=True, blank=True)),
                 ('ip_allow_enabled', models.BooleanField(default=False)),
                 ('ip_allow_list', models.CharField(max_length=200, null=True, blank=True)),
-                ('director', models.ManyToManyField(to='balancer.Director', null=True, blank=True)),
+                ('director', models.ForeignKey(blank=True, to='balancer.Director', null=True)),
                 ('users', models.ManyToManyField(to='nginx.AuthUser', null=True, blank=True)),
             ],
             options={

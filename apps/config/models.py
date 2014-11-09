@@ -8,9 +8,9 @@ class ConfigDefaultAdmin(models.Model):
 class Server(ConfigDefaultAdmin):
     name = models.CharField(max_length=200)
     address = models.IPAddressField()
-    ssh_user = models.CharField(max_length=200)
-    ssh_password = models.CharField(max_length=200)
-    ssh_port = models.IntegerField(default=22)
+    ssh_user = models.CharField(max_length=200,null=True,blank=True)
+    ssh_password = models.CharField(max_length=200,null=True,blank=True)
+    ssh_port = models.IntegerField(default=22,null=True,blank=True)
 
 class Group(ConfigDefaultAdmin):
     name = models.CharField(max_length=200)
@@ -18,8 +18,6 @@ class Group(ConfigDefaultAdmin):
 class Config(ConfigDefaultAdmin):
     group = models.OneToOneField(Group)
     temp_dir = models.CharField(max_length=200)
-    nginx_maps_dir = models.CharField(max_length=200)
-    nginx_conf_dir = models.CharField(max_length=200)
     nginx_sites_dir = models.CharField(max_length=200)
     ldirectord_conf = models.CharField(max_length=200)
     varnish_dir = models.CharField(max_length=200)

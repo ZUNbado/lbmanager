@@ -4,12 +4,6 @@ from .models import HostConfig, NginxVirtualHost, AuthUser, Location
 class LocationInline(admin.StackedInline):
     model = NginxVirtualHost.location.through
     extra = 1
-    fieldsets = (
-        (None, {
-            'fields': ('name', 'path_url', 'enabled')
-        }),
-    )
-    
 
 class NginxVirtualHostAdmin(admin.ModelAdmin):
     model = NginxVirtualHost
@@ -28,7 +22,26 @@ class NginxVirtualHostAdmin(admin.ModelAdmin):
         })
     )
 
+class LocationAdmin(admin.ModelAdmin):
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'path_url', 'enabled'),
+        }),
+        ('Backend', {
+            'fields': ('backend_type', 'director', 'path_fs'),
+            'classes': ('collapse',),
+        }),
+        ('Auth HTTP', {
+            'fields': ('auth_basic_enabled', 'auth_basic_msg', 'users'),
+            'classes': ('collapse',),
+        }),
+        ('IP Restriction', {
+            'fields': ('ip_allow_enabled', 'ip_allow_list'),
+            'classes': ('collapse',),
+        })
+    )
+
 admin.site.register(HostConfig)
 admin.site.register(NginxVirtualHost, NginxVirtualHostAdmin)
 admin.site.register(AuthUser)
-admin.site.register(Location)
+admin.site.register(Location, LocationAdmin)

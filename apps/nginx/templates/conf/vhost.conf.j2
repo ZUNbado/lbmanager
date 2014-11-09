@@ -3,7 +3,6 @@ map http_host $backend_{{ virtualhost.id }} {
     {{ domain.name }}   {{ domain.director.name }};
 {%- endfor %}
 }
-
 map $http_host $normalized_{{ virtualhost.id }} {
 {%- for domain in domains %}
     {{ domain.name }} {{ domain.name }};
@@ -24,7 +23,6 @@ map $http_host $redir_{{ virtualhost.id }} {
     {{ redir.domain.name }} {{ redir.name }};
 {%- endfor %}
 }
-
 map $http_host $site_redir_{{ virtualhost.id }} {
 {%- for url in urlRedir %}
     {{ url.name }} {{ url.url }};

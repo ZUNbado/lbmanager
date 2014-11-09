@@ -39,28 +39,30 @@ def apply(request):
         for key in final_members.keys():
             member=final_members[key]
             config=Config.objects.get(group=group)
-            man=ConfManager(member.address, member.ssh_user, member.ssh_password, member.ssh_port )
-            msg = ''
-            if man.connected:
-                if config.enable_transfer is True:
-                    man.copy(tempdir+'/ldirectord.cf','/etc/ha.d/ldirectord.cf')
-                    msg = "Files transferred"
-                else:
-                    msg = "Transfer files disabled"
+            if config.enable_transfer is True or config.enable_reload is True:
+                man=ConfManager(member.address, member.ssh_user, member.ssh_password, member.ssh_port )
+                msg = ''
+                if man.connected:
+                    if config.enable_transfer is True:
+                        man.copy(tempdir+'/ldirectord.cf','/etc/ha.d/ldirectord.cf')
+                        msg = "Files transferred"
+                    else:
+                        msg = "Transfer files disabled"
 
-                if config.enable_reload is True:
-                    man.command('service ldirectord restart')
-                    msg = msg + "Service restarted"
+                    if config.enable_reload is True:
+                        man.command('service ldirectord restart')
+                        msg = msg + "Service restarted"
+                    else:
+                        msg = msg + "Reload services disabled"
+    
+                    man.close()
                 else:
-                    msg = msg + "Reload services disabled"
-
-                man.close()
+                    msg = "Error connecting host: %s" % man.error_msg
             else:
-                msg = "Error connecting host: %s" % man.error_msg
+                msg = "Configuration disabled"
             status.append({ 'name': member.name, 'msg': msg })
         final_content.append({ 'group': group.name, 'content': content })
 
     template = loader.get_template('cluster/apply.html')
     context = RequestContext(request, { 'content': final_content, 'status': status })
     return HttpResponse(template.render(context))
-    

@@ -40,24 +40,25 @@ def apply(request):
             member=final_members[key]
             config=Config.objects.get(group=group)
             msg = ''
-            man=ConfManager(member.server.address, member.server.ssh_user, member.server.ssh_password, member.server.ssh_port )
-            if man.connected:
-                if config.enable_transfer is  True:
-                    man.copy(tempdir+'/backend.vcl',varnish_dir+'/default.vcl')
-                    msg = "Files transferred"
-                else:
-                    msg = "Transfer files disabled"
+            if config.enable_transfer is True or config.enable_reload is True:
+                man=ConfManager(member.server.address, member.server.ssh_user, member.server.ssh_password, member.server.ssh_port )
+                if man.connected:
+                    if config.enable_transfer is  True:
+                        man.copy(tempdir+'/backend.vcl',varnish_dir+'/default.vcl')
+                        msg = "Files transferred"
+                    else:
+                        msg = "Transfer files disabled"
 
-                if config.enable_reload is True:
-                    man.command('service varnish start')
-                    msg = msg + "Service restarted"
+                    if config.enable_reload is True:
+                        man.command('service varnish start')
+                        msg = msg + "Service restarted"
+                    else:
+                        msg = msg + "Reload services disabled"
+                    man.close()
                 else:
-                    msg = msg + "Reload services disabled"
-
-                man.close()
+                    msg = "Error connecting host: %s" % man.error_msg
             else:
-                msg = "Error connecting host: %s" % man.error_msg
-
+                msg = "Configuration disabled"
             status.append({ 'name': member.name, 'msg': msg })
                 
     template = loader.get_template('balancer/apply.html')

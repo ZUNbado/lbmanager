@@ -1,0 +1,109 @@
+[
+{
+   "fields": {
+      "enabled": true
+   },
+   "model": "config.configdefaultadmin",
+   "pk": 1
+},
+{
+   "fields": {
+      "enabled": true
+   },
+   "model": "config.configdefaultadmin",
+   "pk": 2
+},
+{
+   "fields": {
+      "enabled": true
+   },
+   "model": "config.configdefaultadmin",
+   "pk": 3
+},
+{
+   "fields": {
+      "enabled": true
+   },
+   "model": "config.configdefaultadmin",
+   "pk": 4
+},
+{
+   "fields": {
+      "enabled": true
+   },
+   "model": "config.configdefaultadmin",
+   "pk": 5
+},
+{
+   "fields": {
+      "enabled": true
+   },
+   "model": "config.configdefaultadmin",
+   "pk": 6
+},
+{
+   "fields": {
+      "ssh_port": 22,
+      "ssh_user": "",
+      "name": "lb02",
+      "ssh_password": "",
+      "address": "192.168.1.10"
+   },
+   "model": "config.server",
+   "pk": 3
+},
+{
+   "fields": {
+      "ssh_port": 22,
+      "ssh_user": "",
+      "name": "lb01",
+      "ssh_password": "",
+      "address": "192.168.1.10"
+   },
+   "model": "config.server",
+   "pk": 4
+},
+{
+   "fields": {
+      "ssh_port": 22,
+      "ssh_user": "",
+      "name": "backend01",
+      "ssh_password": "",
+      "address": "192.168.1.10"
+   },
+   "model": "config.server",
+   "pk": 5
+},
+{
+   "fields": {
+      "ssh_port": 22,
+      "ssh_user": "",
+      "name": "backend02",
+      "ssh_password": "",
+      "address": "192.168.1.10"
+   },
+   "model": "config.server",
+   "pk": 6
+},
+{
+   "fields": {
+      "name": "DefaultGroup"
+   },
+   "model": "config.group",
+   "pk": 1
+},
+{
+   "fields": {
+      "cluster_servers": [],
+      "group": 1,
+      "temp_dir": "/tmp/lbmanager",
+      "varnish_dir": "/etc/varnish",
+      "enable_reload": false,
+      "ldirectord_conf": "/etc/ha.d/ldirectord.cf",
+      "nginx_sites_dir": "/etc/nginx/sites-enabled",
+      "enable_transfer": false
+   },
+   "model": "config.config",
+   "pk": 2
+}
+]
