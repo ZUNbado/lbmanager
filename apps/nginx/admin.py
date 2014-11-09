@@ -41,7 +41,14 @@ class LocationAdmin(admin.ModelAdmin):
         })
     )
 
+class AuthUserAdmin(admin.ModelAdmin):
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'password', 'enabled'),
+        }),
+    )
+
 admin.site.register(HostConfig)
 admin.site.register(NginxVirtualHost, NginxVirtualHostAdmin)
-admin.site.register(AuthUser)
+admin.site.register(AuthUser, AuthUserAdmin)
 admin.site.register(Location, LocationAdmin)

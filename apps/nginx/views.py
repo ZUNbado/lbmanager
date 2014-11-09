@@ -3,6 +3,7 @@ from django.template import RequestContext, loader
 from django.shortcuts import redirect
 from jinja2 import Template as jinja_template
 
+import base64, hashlib, os
 
 from .models import NginxVirtualHost
 from ..config.models import Group, Server
@@ -16,7 +17,7 @@ def apply(request):
     data_tpl = []
     for group in Group.objects.filter(enabled=True):
         vfiles = []
-        for vhost in NginxVirtualHost.objects.all():
+        for vhost in NginxVirtualHost.objects.filter(enabled=True):
             if vhost.cluster.filter(group=group).count() > 0:
                 domains = Domain.objects.filter(enabled=True,virtual_host=vhost)
                 aliases = DomainAlias.objects.filter(enabled=True,domain=domains)
@@ -26,6 +27,11 @@ def apply(request):
                 ctx = RequestContext(request, { 'virtualhost': vhost, 'domains': domains, 'aliases': aliases, 'hostRedirs': hostRedirs, 'urlRedirs': urlRedirs })
                 content=tpl.render(ctx)
                 vfiles.append({ 'file': vhost.name, 'content': content })
+
+                for location in vhost.location.all():
+                    tpl = loader.get_template('conf/passwd.j2')
+                    ctx = RequestContext(request, { 'location': location })
+                    content = tpl.render(ctx)
 
         data_tpl.append({ 'group': group.name, 'maps': vfiles })
         

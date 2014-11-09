@@ -3,6 +3,8 @@ from ..config.models import Group
 from ..cluster.models import Cluster
 from ..balancer.models import Director
 
+import base64, hashlib, os
+
 class NginxDefaults(models.Model):
     enabled = models.BooleanField(default=True)
     def __unicode__(self):
@@ -18,7 +20,13 @@ class HostConfig(NginxDefaults):
 class AuthUser(NginxDefaults):
     name = models.CharField(max_length=200)
     password = models.CharField(max_length=200)
+    encrypted = models.CharField(max_length=200,null=True,blank=True)
 
+    def save(self, *args, **kwargs):
+        salt = 'test'
+        self.encrypted='{SSHA}' + base64.b64encode(hashlib.sha1(self.password + salt).digest() + salt)
+        super(AuthUser, self).save(*args, **kwargs)
+        
     class Meta:
         verbose_name_plural = '3- Autenticate users'
 
