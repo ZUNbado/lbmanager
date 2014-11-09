@@ -19,6 +19,9 @@ class AuthUser(NginxDefaults):
     name = models.CharField(max_length=200)
     password = models.CharField(max_length=200)
 
+    class Meta:
+        verbose_name_plural = '3- Autenticate users'
+
 class Location(NginxDefaults):
     TYPES = (
         ('proxy', 'Proxy'),
@@ -35,6 +38,8 @@ class Location(NginxDefaults):
     ip_allow_enabled = models.BooleanField(default=False)
     ip_allow_list = models.CharField(max_length=200,null=True,blank=True)
 
+    class Meta:
+        verbose_name_plural = '2- Location'
 
 class NginxVirtualHost(NginxDefaults):
     REDIRECTS = (
@@ -50,3 +55,6 @@ class NginxVirtualHost(NginxDefaults):
     ssl_cert = models.TextField(null=True,blank=True)
     ssl_key = models.TextField(null=True,blank=True)
     ssl_ca = models.TextField(null=True,blank=True)
+
+    class Meta:
+        verbose_name_plural = '1- VirtualHost'

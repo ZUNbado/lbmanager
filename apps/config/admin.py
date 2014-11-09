@@ -41,7 +41,7 @@ class GroupAdmin(ConfigDefaultAdmin):
 class ConfigAdmin(ConfigDefaultAdmin):
     actions = [set_enable_transfer,set_disable_transfer,set_enable_reload,set_disable_reload]
     fields = [ 'group', 'temp_dir', 'nginx_sites_dir', 'ldirectord_conf', 'varnish_dir', 'enable_transfer', 'enable_reload', 'enabled' ]
-    list_display = [ 'group', 'enable_transfer', 'enable_reload', 'enabled' , 'enable_link']
+    list_display = [ 'group', 'enable_transfer', 'enable_reload', 'enabled' ]
 
     def get_urls(self):
         urls = super(ConfigAdmin, self).get_urls()

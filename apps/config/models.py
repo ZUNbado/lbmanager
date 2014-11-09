@@ -12,8 +12,14 @@ class Server(ConfigDefaultAdmin):
     ssh_password = models.CharField(max_length=200,null=True,blank=True)
     ssh_port = models.IntegerField(default=22,null=True,blank=True)
 
+    class Meta:
+        verbose_name_plural = '3- Server'
+
 class Group(ConfigDefaultAdmin):
     name = models.CharField(max_length=200)
+
+    class Meta:
+        verbose_name_plural = '1- Group'
 
 class Config(ConfigDefaultAdmin):
     group = models.OneToOneField(Group)
@@ -28,8 +34,5 @@ class Config(ConfigDefaultAdmin):
     def __unicode__(self):
         return u"%s" % (self.group.name)
 
-    def enable_link(self):
-        return '<a href="/admin/config/config/enable/%d/" class="link">Enable</a>' % self.id
-
-    enable_link.short_description = 'Enable link'
-    enable_link.allow_tags = True
+    class Meta:
+        verbose_name_plural = '2- Group configuration'
