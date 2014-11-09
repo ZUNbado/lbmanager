@@ -78,7 +78,7 @@ server {
         {%- endif %}
         {%- if location.auth_basic_enabled == True %}
         auth_basic  "{{ location.auth_basic_msg }}";
-        auth_basic_user_file "{{ location.id }}.passwd"
+        auth_basic_user_file "{{ virtualhost.id }}.{{ location.id }}.passwd"
         {%- endif %}
     }
 {%- endfor %}

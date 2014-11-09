@@ -8,6 +8,8 @@ class LocationInline(admin.StackedInline):
 class NginxVirtualHostAdmin(admin.ModelAdmin):
     model = NginxVirtualHost
     inlines = [LocationInline, ]
+    list_display = [ 'name', 'get_clusters', 'get_locations', 'get_ssl', 'enabled' ]
+    list_editable = [ 'enabled' ]
     fieldsets = (
         (None, {
             'fields': ('name', 'cluster', 'enabled'),
@@ -23,6 +25,8 @@ class NginxVirtualHostAdmin(admin.ModelAdmin):
     )
 
 class LocationAdmin(admin.ModelAdmin):
+    list_display = [ 'name', 'path_url', 'auth_basic_enabled', 'ip_allow_enabled', 'enabled' ]
+    list_editable = [ 'auth_basic_enabled', 'ip_allow_enabled', 'enabled' ]
     fieldsets = (
         (None, {
             'fields': ('name', 'path_url', 'enabled'),
@@ -42,6 +46,8 @@ class LocationAdmin(admin.ModelAdmin):
     )
 
 class AuthUserAdmin(admin.ModelAdmin):
+    list_display = [ 'name', 'password', 'enabled' ]
+    list_editable = [ 'enabled' ]
     fieldsets = (
         (None, {
             'fields': ('name', 'password', 'enabled'),

@@ -64,5 +64,20 @@ class NginxVirtualHost(NginxDefaults):
     ssl_key = models.TextField(null=True,blank=True)
     ssl_ca = models.TextField(null=True,blank=True)
 
+    def get_clusters(self):
+        return ", ".join([c.name for c in self.cluster.filter(enabled=True)])
+
+    def get_locations(self):
+        return ", ".join([l.name for l in self.location.filter(enabled=True)])
+
+    def get_ssl(self):
+        ssl=False
+        for c in self.cluster.filter(enabled=True): 
+            if c.ssl is True: 
+                ssl=True
+        return ssl
+    get_ssl.boolean = True
+    get_ssl.short_description = 'SSL Enabled'
+
     class Meta:
         verbose_name_plural = '1- VirtualHost'
