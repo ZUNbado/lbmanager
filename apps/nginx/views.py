@@ -37,9 +37,9 @@ def apply(request):
                 for location in vhost.location.filter(enabled=True,auth_basic_enabled=True):
                     tpl = loader.get_template('conf/passwd.j2')
                     ctx = RequestContext(request, { 'location': location })
-                    content = tpl.render(ctx)
-                    FilesManager.WriteFile(tempdir+'/'+str(vhost.id)+"."+str(location.id)+'.passwd', content)
-                    afiles.append({ 'file': str(vhost.id)+"."+str(location.id)+'.passwd', 'content': content })
+                    a_content = tpl.render(ctx)
+                    FilesManager.WriteFile(tempdir+'/'+str(vhost.id)+"."+str(location.id)+'.passwd', a_content)
+                    afiles.append({ 'file': str(vhost.id)+"."+str(location.id)+'.passwd', 'content': a_content })
 
         # Get all servers from a group
         clusters=Cluster.objects.filter(group=group)
@@ -61,7 +61,7 @@ def apply(request):
                             man.copy(tempdir+'/'+vfile['file'],group.nginx_dir+'/sites-enabled/'+vfile['file'])
                         man.command('mkdir -p '+group.nginx_dir+'/auth/')
                         for afile in afiles:
-                            man.copy(tempdir+'/'+vfile['file'],group.nginx_dir+'/auth/'+vfile['file'])
+                            man.copy(tempdir+'/'+afile['file'],group.nginx_dir+'/auth/'+afile['file'])
                         msg = "Files transferred"
                     else:
                         msg = "Transfer files disabled"
