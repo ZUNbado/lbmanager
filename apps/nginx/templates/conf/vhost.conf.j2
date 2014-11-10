@@ -49,14 +49,17 @@ server {
     }
 {%- for location in virtualhost.location.all() %}
     location {{ location.path_url }} {
-    {%- if location.path_url == "/" %}
         {%- if location.backend_type == 'proxy' %}
         proxy_pass          http://127.0.0.1:6081;
         proxy_set_header    Host                    $normalized_{{ virtualhost.id }};
         proxy_set_header    X-Real-IP               $remote_addr;
         proxy_set_header    X-Forwarded-For         $proxy_add_x_forwarded_for;
         proxy_set_header    X-Forwarded-Proto       $scheme;
+        {%- if location.director != None %}
+        proxy_set_header    X-vns-director          {{ location.director.name }};
+        {%- else %}
         proxy_set_header    X-vns-director          $backend_{{ virtualhost.id }};
+        {%- endif %}
         proxy_set_header    X-enablecache           $cache_{{ virtualhost.id }};
         proxy_buffering     off;
         gzip                off;
@@ -65,7 +68,6 @@ server {
         root   {{ location.path_fs }}/$normalized_{{ virtualhost.id }};
         index  index.html index.htm;
         {%- endif %}
-    {%- endif %}
         {%- if location.ip_allow_enabled == True and location.auth_basic_enabled == True %}
         satisfy any;
         {%- endif %}
