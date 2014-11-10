@@ -18,7 +18,7 @@ class Server(ConfigDefaultAdmin):
 class Group(ConfigDefaultAdmin):
     name = models.CharField(max_length=200)
     temp_dir = models.CharField(max_length=200)
-    nginx_sites_dir = models.CharField(max_length=200)
+    nginx_dir = models.CharField(max_length=200)
     ldirectord_conf = models.CharField(max_length=200)
     varnish_dir = models.CharField(max_length=200)
     cluster_servers = models.ManyToManyField(Server,null=True,blank=True)
