@@ -1,8 +1,6 @@
 from django.http import HttpResponse
 from django.template import RequestContext, loader
-from django.shortcuts import redirect, get_object_or_404
-from jinja2 import Template as jinja_template
-from django.contrib.admin.sites import AdminSite
+from django.shortcuts import redirect
 from .confs import GraphConf
 import rrd
 from datetime import datetime, timedelta
@@ -14,7 +12,6 @@ def index(request):
 
     conf = GraphConf()
     confs = conf.getallconf('/var/lib/collectd/rrd')
-    print confs
 
     end = datetime.now()
     start = end - timedelta(hours=1)
@@ -28,8 +25,7 @@ def index(request):
             end = datetime.combine(form.cleaned_data['end_date'], form.cleaned_data['end_time']).strftime('%s')
     else:
         form = GraphForm()
-
-
+    
     template = loader.get_template('status/index.html')
     context = RequestContext(request, {
         'form': form,
