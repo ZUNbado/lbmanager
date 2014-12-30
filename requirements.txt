@@ -1,5 +1,4 @@
 Django==1.7.1
 django-apptemplates==0.0.1
-django-nested-inline==0.3.3
 django-jinja==1.0.4
 django-admin-bootstrapped==2.1.0
