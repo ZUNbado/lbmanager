@@ -18,6 +18,7 @@ def sync(request):
 
     shutil.copy2(root+dbfile, config.temp_dir)
 
+    # cal canviar aixo perque agafi els membres d'un cluster enlloc de TOTS els servers (als backends no s'ha de copiar)
     status = []
     if config.enable_transfer is True:
         for server in Server.objects.all():
