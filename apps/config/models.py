@@ -23,6 +23,7 @@ class Group(ConfigDefaultAdmin):
     graph_dir = models.CharField(max_length=200)
     varnish_dir = models.CharField(max_length=200)
     cluster_servers = models.ManyToManyField(Server,null=True,blank=True)
+    admin_port = models.IntegerField(default=8000,null=True,blank=True)
     enable_transfer = models.BooleanField(default=True)
     enable_reload = models.BooleanField(default=True)
 

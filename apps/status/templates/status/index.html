@@ -6,11 +6,11 @@
     <tr>
 {% for server, graphs in servers.items %}
         <td>
-                {{ server }}
             <table>
-            {% for graph in graphs %}
+            <tr><td><h1>{{ server }}</h1></td></tr>
+            {% for graph in graphs.graphs %}
             <tr><td>{{ graph.graph.name }}</td></tr>
-            <tr><td><img src="/status/show_image/{{ graph.pk }}/{{ end }}/{{ start }}/" /></td></tr>
+            <tr><td><img src="http://{{ graphs.server.address }}:{{ config.admin_port }}/status/show_image/{{ graph.pk }}/{{ end }}/{{ start }}/" /></td></tr>
             {% endfor %}
             </table>
         </td>
