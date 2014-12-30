@@ -1,0 +1,14 @@
+{% extends "config:admin/index.html" %}
+
+{% block content %}
+<div id="content-main">
+        <h3>Status results</h3>
+        <table>
+                <tr><td>Host</td><td>Message</td></tr>
+                {% for stat in status %}
+                <tr><td>{{ stat.name }}</td><td>{{ stat.msg }}</td></tr>
+                {% endfor %}
+        </table>
+</div>
+{% endblock %}
+

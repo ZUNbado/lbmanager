@@ -8,6 +8,8 @@ urlpatterns = patterns('',
     urlm(r'^admin/balancer/custom/', include('apps.balancer.urls')),
     urlm(r'^admin/cluster/custom/', include('apps.cluster.urls')),
     urlm(r'^admin/nginx/custom/', include('apps.nginx.urls')),
+    urlm(r'^admin/database/custom/', include('apps.config.urls')),
+    urlm(r'^admin/config/custom/', include('apps.config.urls')),
     urlm(r'^status/', include('apps.status.urls')),
 )
 
