@@ -1,10 +1,23 @@
 {% extends "config:admin/index.html" %}
 
 {% block content %}
-{% for graph in graphs %}
-<h1>{{ graph }}</h1>
-<img src="/status/show_image/{{ graph }}/{{ end }}/{{ start }}/" />
+
+<table>
+    <tr>
+{% for server, graphs in servers.items %}
+        <td>
+                {{ server }}
+            <table>
+            {% for graph in graphs %}
+            <tr><td>{{ graph.graph.name }}</td></tr>
+            <tr><td><img src="/status/show_image/{{ graph.pk }}/{{ end }}/{{ start }}/" /></td></tr>
+            {% endfor %}
+            </table>
+        </td>
 {% endfor %}
+    </tr>
+<table>
+
 <form action="/status/" method="post">
     {% csrf_token %}
     {{ form.as_p }}
