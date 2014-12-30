@@ -37,6 +37,7 @@ class Location(NginxDefaults):
     )
     name = models.CharField(max_length=200)
     path_url = models.CharField(max_length=200)
+    nginx_virtualhost = models.ForeignKey('NginxVirtualHost')
     backend_type = models.CharField(max_length=5,choices=TYPES,default='proxy',null=True,blank=True)
     director = models.ForeignKey(Director,null=True,blank=True)
     path_fs = models.CharField(max_length=200,null=True,blank=True)
@@ -56,7 +57,7 @@ class NginxVirtualHost(NginxDefaults):
     )
     name = models.CharField(max_length=200)
     cluster = models.ManyToManyField(Cluster)
-    location = models.ManyToManyField(Location)
+    #location = models.ManyToManyField(Location)
     extraconf = models.TextField(null=True,blank=True)
     access_log = models.CharField(max_length=200,null=True,blank=True)
     redirect_type = models.IntegerField(choices=REDIRECTS,default=301)
@@ -68,7 +69,7 @@ class NginxVirtualHost(NginxDefaults):
         return ", ".join([c.name for c in self.cluster.filter(enabled=True)])
 
     def get_locations(self):
-        return ", ".join([l.name for l in self.location.filter(enabled=True)])
+        return ", ".join([l.name for l in Location.objects.filter(enabled=True, nginx_virtualhost=self)])
 
     def get_ssl(self):
         ssl=False

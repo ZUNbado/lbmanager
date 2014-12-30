@@ -80,6 +80,11 @@ GPRINT:lavg:LAST:"%4.2lf Last\l"
 """
     }
 
+    def getgraphtypes(self):
+        confs = []
+        for (graph, conf) in self.GRAPH.items():
+            confs.append(graph)
+        return confs
 
     def getallconf(self, base_path):
         confs={}

@@ -1,3 +1,5 @@
 from django.contrib import admin
+from .models import GraphTypes, Graph
 
-# Register your models here.
+admin.site.register(GraphTypes)
+admin.site.register(Graph)

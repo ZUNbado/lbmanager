@@ -1,13 +1,14 @@
-from django.conf.urls import patterns, include, url
+from django.conf.urls import patterns, include, url as urlm
 from django.contrib import admin
+from django.views.generic.base import RedirectView
 
 urlpatterns = patterns('',
-
-    url(r'^admin/', include(admin.site.urls)),
-    url(r'^admin/balancer/custom/', include('apps.balancer.urls')),
-    url(r'^admin/cluster/custom/', include('apps.cluster.urls')),
-    url(r'^admin/nginx/custom/', include('apps.nginx.urls')),
-    url(r'^status/', include('apps.status.urls')),
+    urlm(r'^$', RedirectView.as_view(url='/admin')),
+    urlm(r'^admin/', include(admin.site.urls)),
+    urlm(r'^admin/balancer/custom/', include('apps.balancer.urls')),
+    urlm(r'^admin/cluster/custom/', include('apps.cluster.urls')),
+    urlm(r'^admin/nginx/custom/', include('apps.nginx.urls')),
+    urlm(r'^status/', include('apps.status.urls')),
 )
 
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
