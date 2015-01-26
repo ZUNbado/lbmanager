@@ -59,7 +59,7 @@ def apply(request):
                 if man.connected:
                     if group.enable_transfer is  True:
                         for vfile in vfiles:
-                            man.copy(tempdir+'/'+vfile['file'],group.nginx_dir+'/sites-enabled/'+vfile['file'])
+                            man.copy(tempdir+'/'+vfile['file'],group.nginx_dir+'/conf.d/'+vfile['file'])
                         man.command('mkdir -p '+group.nginx_dir+'/auth/')
                         for afile in afiles:
                             man.copy(tempdir+'/'+afile['file'],group.nginx_dir+'/auth/'+afile['file'])
