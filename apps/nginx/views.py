@@ -5,7 +5,7 @@ from jinja2 import Template as jinja_template
 
 import base64, hashlib, os
 
-from .models import NginxVirtualHost
+from .models import NginxVirtualHost, Location
 from ..config.models import Group, Server
 from ..cluster.models import Cluster, Member
 from ..web.models import Domain, DomainAlias, HostRedir, UrlRedir
@@ -28,13 +28,14 @@ def apply(request):
                 aliases = DomainAlias.objects.filter(enabled=True,domain=domains)
                 hostRedirs = HostRedir.objects.filter(enabled=True,domain=domains)
                 urlRedirs = UrlRedir.objects.filter(enabled=True,virtual_host=vhost)
+                locations = Location.objects.filter(nginx_virtualhost=vhost,enabled=True)
                 tpl = loader.get_template('conf/vhost.conf.j2')
-                ctx = RequestContext(request, { 'virtualhost': vhost, 'domains': domains, 'aliases': aliases, 'hostRedirs': hostRedirs, 'urlRedirs': urlRedirs })
+                ctx = RequestContext(request, { 'virtualhost': vhost, 'domains': domains, 'aliases': aliases, 'hostRedirs': hostRedirs, 'urlRedirs': urlRedirs, 'locations' : locations })
                 content=tpl.render(ctx)
                 FilesManager.WriteFile(tempdir+'/'+str(vhost.id)+'.conf', content)
                 vfiles.append({ 'file': str(vhost.id)+'.conf', 'content': content })
 
-                for location in vhost.location.filter(enabled=True,auth_basic_enabled=True):
+                for location in Location.objects.filter(nginx_virtualhost=vhost,enabled=True,auth_basic_enabled=True):
                     tpl = loader.get_template('conf/passwd.j2')
                     ctx = RequestContext(request, { 'location': location })
                     a_content = tpl.render(ctx)

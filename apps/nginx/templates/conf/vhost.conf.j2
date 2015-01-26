@@ -47,7 +47,7 @@ server {
         rewrite ^(.*) $site_redir_{{ virtualhost.id }} last;
         return {{ virtualhost.redirect_type }};
     }
-{%- for location in virtualhost.location.all() %}
+{%- for location in locations %}
     location {{ location.path_url }} {
         {%- if location.backend_type == 'proxy' %}
         proxy_pass          http://127.0.0.1:6081;
