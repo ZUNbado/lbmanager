@@ -19,9 +19,14 @@ def apply(request):
         FilesManager.DirExists(tempdir)
 
         directors = Director.objects.filter(enabled=True,group=group)
+        backends = []
+        for director in directors:
+            for backend in director.backends.all():
+                if backend not in backends: backends.append(backend)
+
 
         tpl = loader.get_template('conf/backends.vcl.j2')
-        ctx = RequestContext(request, { 'directors' : directors })
+        ctx = RequestContext(request, { 'directors' : directors, 'backends' : backends })
         tpl_content=tpl.render(ctx)
         FilesManager.WriteFile(tempdir+'/backend.vcl', tpl_content)
         content.append({ 'group': group.name, 'content': tpl_content })

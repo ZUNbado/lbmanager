@@ -1,5 +1,4 @@
-{%- for director in directors %}
-{%- for backend in director.backends.all() %}
+{%- for backend in backends %}
 backend {{ backend.name }} {
     .host = "{{ backend.server.address }}";
 {%- if backend.port != None %}
@@ -32,7 +31,6 @@ backend {{ backend.name }} {
     }
 {%- endif %}
 }
-{%- endfor %}
 {%- endfor %}
 
 {%- for director in directors %}
