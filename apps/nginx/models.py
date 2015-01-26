@@ -28,7 +28,7 @@ class AuthUser(NginxDefaults):
         super(AuthUser, self).save(*args, **kwargs)
         
     class Meta:
-        verbose_name_plural = '3- Autenticate users'
+        verbose_name_plural = '2- Web users'
 
 class Location(NginxDefaults):
     TYPES = (
@@ -47,9 +47,6 @@ class Location(NginxDefaults):
     ip_allow_enabled = models.BooleanField(default=False)
     ip_allow_list = models.CharField(max_length=200,null=True,blank=True)
 
-    class Meta:
-        verbose_name_plural = '2- Location'
-
 class NginxVirtualHost(NginxDefaults):
     REDIRECTS = (
         (301, 'Permanent'),
@@ -57,7 +54,6 @@ class NginxVirtualHost(NginxDefaults):
     )
     name = models.CharField(max_length=200)
     cluster = models.ManyToManyField(Cluster)
-    #location = models.ManyToManyField(Location)
     extraconf = models.TextField(null=True,blank=True)
     access_log = models.CharField(max_length=200,null=True,blank=True)
     redirect_type = models.IntegerField(choices=REDIRECTS,default=301)
