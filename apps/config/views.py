@@ -5,6 +5,7 @@ from jinja2 import Template as jinja_template
 
 import os, shutil
 from .models import Group, Server
+from ..cluster.models import Member
 from libs.confmanager import ConfManager, FilesManager
 
 
@@ -22,14 +23,15 @@ def sync(request):
     status = []
     if config.enable_transfer is True:
         for server in Server.objects.all():
-            man = ConfManager(server.address, server.ssh_user, server.ssh_password, server.ssh_port )
-            if man.connected:
-                man.copy(config.temp_dir+dbfile, config.app_path+dbfile)
-                msg = "Database synced"
-            else:
-                msg = "Error connecting host: %s" % man.error_msg
+            if Member.objects.filter(server=server):
+                man = ConfManager(server.address, server.ssh_user, server.ssh_password, server.ssh_port )
+                if man.connected:
+                    man.copy(config.temp_dir+dbfile, config.app_path+dbfile)
+                    msg = "Database synced"
+                else:
+                    msg = "Error connecting host: %s" % man.error_msg
 
-            status.append({ 'name' : server.name, 'msg': msg })
+                status.append({ 'name' : server.name, 'msg': msg })
     else:
         status.append({ 'name': '', 'msg' : 'Transfer is disabled' })
 

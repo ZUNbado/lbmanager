@@ -13,8 +13,8 @@ def index(request):
 
     servers = {}
     for server in Server.objects.filter(enabled=True):
-        if server.name not in servers: servers[server.name] = { 'server': server, 'graphs': [] }
         for graph in Graph.objects.filter(server=server).order_by('graph'):
+            if server.name not in servers: servers[server.name] = { 'server': server, 'graphs': [] }
             if graph not in servers[server.name]['graphs']: servers[server.name]['graphs'].append(graph)
 
     end = datetime.now()
