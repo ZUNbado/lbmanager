@@ -46,7 +46,7 @@ class CustomIndexDashboard(Dashboard):
             self.children.append(modules.AppList(
                 title='HTTP Frontend + SSL',
                 models=('apps.nginx.*',),
-                content='Not allowed',
+                pre_content='Configure Frontend Virtual Hosts',
                 ))
 
         if user.has_module_perms('balancer'):
