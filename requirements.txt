@@ -3,3 +3,4 @@ django-apptemplates==0.0.1
 django-jinja==1.0.4
 django-admin-bootstrapped==2.1.0
 paramiko==1.10.1
+django-admin-tools

@@ -31,6 +31,10 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = (
     'apps.config',
+    'admin_tools',
+    'admin_tools.theming',
+    'admin_tools.menu',
+#    'admin_tools.dashboard',
 #    'django_admin_bootstrapped.bootstrap3',
 #    'django_admin_bootstrapped',
     'apps.web',
@@ -100,3 +104,10 @@ TEMPLATE_LOADERS = (
 )
 
 DEFAULT_JINJA2_TEMPLATE_EXTENSION = '.j2'
+
+from django.conf import global_settings
+TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
+        'django.core.context_processors.request',
+)
+
+ADMIN_TOOLS_MENU = 'menu.CustomMenu'

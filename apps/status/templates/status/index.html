@@ -1,4 +1,4 @@
-{% extends "config:admin/index.html" %}
+{% extends "admin:admin/index.html" %}
 
 {% block content %}
 
@@ -23,4 +23,6 @@
     {{ form.as_p }}
     <input type="submit" value="Submit" />
 </form>
+{% endblock %}
+{% block sidebar %}
 {% endblock %}

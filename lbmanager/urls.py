@@ -11,6 +11,7 @@ urlpatterns = patterns('',
     urlm(r'^admin/database/custom/', include('apps.config.urls')),
     urlm(r'^admin/config/custom/', include('apps.config.urls')),
     urlm(r'^status/', include('apps.status.urls')),
+    urlm(r'^admin_tools/', include('admin_tools.urls')),
 )
 
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
