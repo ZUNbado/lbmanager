@@ -27,6 +27,7 @@ def sync(request):
                 man = ConfManager(server.address, server.ssh_user, server.ssh_password, server.ssh_port )
                 if man.connected:
                     man.copy(config.temp_dir+dbfile, config.app_path+dbfile)
+                    #regex = '([A-Za-z0-9]+)\(\d+\.\d+\.\d+\.\d+,,\d+\)\s+\d+\s+(\w+)\s+(\w+)\s+([a-zA-Z0-9\(\) ]+)'
                     msg = "Database synced"
                 else:
                     msg = "Error connecting host: %s" % man.error_msg
