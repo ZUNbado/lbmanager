@@ -23,12 +23,16 @@ class CustomIndexDashboard(Dashboard):
     """
     def init_with_context(self, context):
         site_name = get_admin_site_name(context)
-         # append an app list module for "Applications"
         self.children.append(modules.AppList(
             _('Applications'),
             exclude=('django.contrib.*',),
         ))
-       # append a link list module for "quick links"
+
+        self.children.append(modules.AppList(
+            _('Administration'),
+            models=('django.contrib.*',),
+        ))
+
         self.children.append(modules.LinkList(
             _('Quick links'),
             layout='inline',
@@ -42,13 +46,7 @@ class CustomIndexDashboard(Dashboard):
             ]
         ))
 
-
-        # append an app list module for "Administration"
-        self.children.append(modules.AppList(
-            _('Administration'),
-            models=('django.contrib.*',),
-        ))
-
+        
 class CustomAppIndexDashboard(AppIndexDashboard):
     """
     Custom app index dashboard for lbmanager.
