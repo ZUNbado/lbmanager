@@ -18,16 +18,31 @@ class CustomMenu(Menu):
     """
     def __init__(self, **kwargs):
         Menu.__init__(self, **kwargs)
+
+    def init_with_context(self, context):
+        """
+        Use this method if you need to access the request context.
+        """
+        user = context['request'].user
+        apply_childrens = []
+        if user.has_module_perms('cluster'):
+            apply_childrens.append(items.MenuItem('Cluster', '/admin/cluster/custom/apply'))
+        if user.has_module_perms('web'):
+            apply_childrens.append(items.MenuItem('Web Sites', '/admin/nginx/custom/apply'))
+        if user.has_module_perms('nginx'):
+            apply_childrens.append(items.MenuItem('Frontend', '/admin/nginx/custom/apply'))
+        if user.has_module_perms('balancer'):
+            apply_childrens.append(items.MenuItem('Balancer', '/admin/balancer/custom/apply'))
+
+        # All user with rights to login admin
+        apply_childrens.append(items.MenuItem('Database', '/admin/database/custom/sync'))
+
         self.children += [
             items.MenuItem(_('Dashboard'), reverse('admin:index')),
             items.MenuItem('Status', '/status'),
             items.MenuItem('Apply',
-                children=[
-                    items.MenuItem('Cluster', '/admin/cluster/custom/apply'),
-                    items.MenuItem('Frontend', '/admin/nginx/custom/apply'),
-                    items.MenuItem('Balancer', '/admin/balancer/custom/apply'),
-                    items.MenuItem('Database', '/admin/database/custom/sync'),
-                    ]),
+                children=apply_childrens
+                ),
             items.MenuItem(
                 _('Applications'),
                 children=[
@@ -43,8 +58,4 @@ class CustomMenu(Menu):
             )
         ]
 
-    def init_with_context(self, context):
-        """
-        Use this method if you need to access the request context.
-        """
         return super(CustomMenu, self).init_with_context(context)
