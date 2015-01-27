@@ -14,8 +14,25 @@ from django.utils.translation import ugettext_lazy as _
 from django.core.urlresolvers import reverse
 
 from admin_tools.dashboard import modules, Dashboard, AppIndexDashboard
+from admin_tools.dashboard.modules import DashboardModule
 from admin_tools.utils import get_admin_site_name
 
+class DashboardText(DashboardModule):
+    template = 'admin_tools/dashboard/modules/text.html'
+    content = None
+
+    def __init__(self, title=None, **kwargs):
+        super(DashboardText, self).__init__(title=None, **kwargs)
+        if title is not None:
+            self.title = title
+
+        for key in kwargs:
+            if hasattr(self.__class__, key):
+                setattr(self, key, kwargs[key])
+
+    def is_empty(self):
+        if self.content is None: return True
+        return False
 
 class CustomIndexDashboard(Dashboard):
     """
@@ -34,6 +51,12 @@ class CustomIndexDashboard(Dashboard):
                 [_('Log out'), reverse('%s:logout' % site_name)],
             ]
         ))
+
+        self.children.append(DashboardText(
+            title='Text module',
+            content='Content text',
+            pre_content='PRE Content text',
+            ))
 
         if user.has_module_perms('cluster'):
             self.children.append(modules.AppList(
@@ -61,16 +84,14 @@ class CustomIndexDashboard(Dashboard):
                 title='Config',
                 models=('apps.config.*',),
                 pre_content='Global configurations',
-                post_content='Post content',
-                    ))
+                ))
 
         if user.has_module_perms('web'):
             self.children.append(modules.AppList(
                 title='Web Sites',
                 models=('apps.web.*',),
                 pre_content='Configure web sites',
-                ),
-            )
+                ))
 
         
 class CustomAppIndexDashboard(AppIndexDashboard):
