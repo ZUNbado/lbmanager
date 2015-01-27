@@ -28,10 +28,15 @@ class CustomMenu(Menu):
                     items.MenuItem('Balancer', '/admin/balancer/custom/apply'),
                     items.MenuItem('Database', '/admin/database/custom/sync'),
                     ]),
-            items.AppList(
+            items.MenuItem(
                 _('Applications'),
-                exclude=('django.contrib.*',)
-            ),
+                children=[
+                    items.ModelList('1- Service IP Cluster', models=('apps.cluster.*',)),
+                    items.ModelList('2- HTTP Frontend + SSL', models=('apps.nginx.*',)),
+                    items.ModelList('3- Load Balancer', models=('apps.balancer.*',)),
+                    items.ModelList('4- Web Sites', models=('apps.web.*',)),
+                    items.ModelList('5- Configuration', models=('apps.config.*',)),
+                    ]),
             items.AppList(
                 _('Administration'),
                 models=('django.contrib.*',)

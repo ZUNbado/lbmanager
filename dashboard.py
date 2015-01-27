@@ -23,28 +23,54 @@ class CustomIndexDashboard(Dashboard):
     """
     def init_with_context(self, context):
         site_name = get_admin_site_name(context)
-        self.children.append(modules.AppList(
-            _('Applications'),
-            exclude=('django.contrib.*',),
-        ))
-
-        self.children.append(modules.AppList(
-            _('Administration'),
-            models=('django.contrib.*',),
-        ))
+        user = context['request'].user
 
         self.children.append(modules.LinkList(
             _('Quick links'),
             layout='inline',
-            draggable=False,
-            deletable=False,
-            collapsible=False,
             children=[
                 [_('Change password'),
                  reverse('%s:password_change' % site_name)],
                 [_('Log out'), reverse('%s:logout' % site_name)],
             ]
         ))
+
+        if user.has_module_perms('cluster'):
+            self.children.append(modules.AppList(
+                title='Service IP Cluster',
+                models=('apps.cluster.*',),
+                pre_content='Configure cluster IP for services',
+                ))
+
+        if user.has_module_perms('nginx'):
+            self.children.append(modules.AppList(
+                title='HTTP Frontend + SSL',
+                models=('apps.nginx.*',),
+                content='Not allowed',
+                ))
+
+        if user.has_module_perms('balancer'):
+            self.children.append(modules.AppList(
+                title='Load Balancer',
+                models=('apps.balancer.*',),
+                pre_content='Configure Load Balancer',
+                ))
+
+        if user.has_module_perms('config'):
+            self.children.append(modules.AppList(
+                title='Config',
+                models=('apps.config.*',),
+                pre_content='Global configurations',
+                post_content='Post content',
+                    ))
+
+        if user.has_module_perms('web'):
+            self.children.append(modules.AppList(
+                title='Web Sites',
+                models=('apps.web.*',),
+                pre_content='Configure web sites',
+                ),
+            )
 
         
 class CustomAppIndexDashboard(AppIndexDashboard):
