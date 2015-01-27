@@ -2,6 +2,10 @@ from django.conf.urls import patterns, include, url as urlm
 from django.contrib import admin
 from django.views.generic.base import RedirectView
 
+admin.site.site_header = 'LB Manager'
+admin.site.index_title = 'LB Manager'
+admin.site.site_title = 'LB Manager'
+
 urlpatterns = patterns('',
     urlm(r'^$', RedirectView.as_view(url='/admin')),
     urlm(r'^admin/', include(admin.site.urls)),

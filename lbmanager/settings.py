@@ -34,7 +34,7 @@ INSTALLED_APPS = (
     'admin_tools',
     'admin_tools.theming',
     'admin_tools.menu',
-#    'admin_tools.dashboard',
+    'admin_tools.dashboard',
 #    'django_admin_bootstrapped.bootstrap3',
 #    'django_admin_bootstrapped',
     'apps.web',
@@ -111,6 +111,9 @@ TEMPLATE_CONTEXT_PROCESSORS = global_settings.TEMPLATE_CONTEXT_PROCESSORS + (
 )
 
 ADMIN_TOOLS_MENU = 'menu.CustomMenu'
+ADMIN_TOOLS_INDEX_DASHBOARD = 'dashboard.CustomIndexDashboard'
+ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'dashboard.CustomAppIndexDashboard'
+
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATIC_URL = '/static/'
