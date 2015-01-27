@@ -22,7 +22,7 @@ def sync(request):
     # cal canviar aixo perque agafi els membres d'un cluster enlloc de TOTS els servers (als backends no s'ha de copiar)
     status = []
     if config.enable_transfer is True:
-        for server in Server.objects.all():
+        for server in Server.objects.filter(role_frontend=True):
             if Member.objects.filter(server=server):
                 man = ConfManager(server.address, server.ssh_user, server.ssh_password, server.ssh_port )
                 if man.connected:
@@ -42,4 +42,24 @@ def sync(request):
         'status' : status
     })
 
+    return HttpResponse(template.render(context))
+
+def health(request):
+    status = []
+    for server in Server.objects.filter(role_frontend=True):
+        if Member.objects.filter(server=server):
+            man = ConfManager(server.address, server.ssh_user, server.ssh_password, server.ssh_port )
+            if man.connected:
+                man.command('varnishadm backend.list')
+                msg = man.stdout.read()
+                #msg = "Database synced"
+            else:
+                msg = "Error connecting host: %s" % man.error_msg
+
+            status.append({ 'name' : server.name, 'msg': msg })
+
+    template = loader.get_template('database/sync.html')
+    context = RequestContext(request, {
+        'status' : status
+    })
     return HttpResponse(template.render(context))
