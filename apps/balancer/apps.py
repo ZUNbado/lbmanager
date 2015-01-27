@@ -3,4 +3,4 @@ from django.apps import apps as django_apps
 
 class BalancerConfig(AppConfig):
     name = "apps.balancer"
-    verbose_name = "3- Balancer"
+    verbose_name = "3- Load Balancer"

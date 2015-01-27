@@ -3,4 +3,4 @@ from django.apps import apps as django_apps
 
 class NginxConfig(AppConfig):
     name = "apps.nginx"
-    verbose_name = "2- Frontend"
+    verbose_name = "2- HTTP Frontend + SSL"

@@ -11,6 +11,9 @@ class Server(ConfigDefaultAdmin):
     ssh_user = models.CharField(max_length=200,null=True,blank=True)
     ssh_password = models.CharField(max_length=200,null=True,blank=True)
     ssh_port = models.IntegerField(default=22,null=True,blank=True)
+    role_cluster = models.BooleanField(default=False)
+    role_backend = models.BooleanField(default=False)
+    role_frontend = models.BooleanField(default=False)
 
     class Meta:
         verbose_name_plural = '2- Server'

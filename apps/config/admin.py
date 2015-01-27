@@ -32,7 +32,17 @@ class ConfigDefaultAdmin(admin.ModelAdmin):
 
 class ServerAdmin(ConfigDefaultAdmin):
     list_display = [ 'name', 'address', 'enabled' ]
-    fields = [ 'name', 'address', 'ssh_user', 'ssh_password', 'ssh_port', 'enabled' ]
+    fieldsets = (
+            (None, {
+                'fields' : ( 'name', 'address', 'enabled' ),
+                }),
+            ('Roles', {
+                'fields' : ( 'role_cluster', 'role_frontend', 'role_backend' ),
+                }),
+            ('Login', {
+                'fields' : ( 'ssh_user', 'ssh_password', 'ssh_port' ),
+                })
+            )
 
 class GroupAdmin(ConfigDefaultAdmin):
     actions = [set_enable_transfer,set_disable_transfer,set_enable_reload,set_disable_reload]

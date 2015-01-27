@@ -3,4 +3,4 @@ from django.apps import apps as django_apps
 
 class WebConfig(AppConfig):
     name = "apps.web"
-    verbose_name = "4- Web"
+    verbose_name = "4- Web Sites"

@@ -3,7 +3,7 @@ from .models import HostConfig, NginxVirtualHost, AuthUser, Location
 
 class LocationInline(admin.StackedInline):
     model = Location
-    extra = 1
+    extra = 0
     #list_display = [ 'name', 'path_url', 'auth_basic_enabled', 'ip_allow_enabled', 'enabled' ]
     #list_editable = [ 'auth_basic_enabled', 'ip_allow_enabled', 'enabled' ]
     fieldsets = (

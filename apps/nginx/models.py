@@ -28,7 +28,7 @@ class AuthUser(NginxDefaults):
         super(AuthUser, self).save(*args, **kwargs)
         
     class Meta:
-        verbose_name_plural = '2- Web users'
+        verbose_name_plural = '2- Web Auth Users'
 
 class Location(NginxDefaults):
     TYPES = (
@@ -60,6 +60,13 @@ class NginxVirtualHost(NginxDefaults):
     ssl_cert = models.TextField(null=True,blank=True)
     ssl_key = models.TextField(null=True,blank=True)
     ssl_ca = models.TextField(null=True,blank=True)
+
+    def save(self, *args, **kwargs):
+        super(NginxVirtualHost, self).save(*args, **kwargs)
+        (location, created) = Location.objects.get_or_create(path_url='/', nginx_virtualhost = self)
+        if created:
+            location.name = 'Default'
+            location.save()
 
     def get_clusters(self):
         return ", ".join([c.name for c in self.cluster.filter(enabled=True)])
