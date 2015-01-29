@@ -40,7 +40,10 @@ class CustomMenu(Menu):
         self.children += [
             items.MenuItem(_('Dashboard'), reverse('admin:index')),
             items.MenuItem('Status Graph', '/status'),
-            items.MenuItem('Backend Health', reverse('apps.config.views.health')),
+            items.MenuItem('Tools',
+                children=[
+                    items.MenuItem('Backend Health', reverse('apps.config.views.health')),
+                    ]),
             items.MenuItem('Apply',
                 children=apply_childrens
                 ),
