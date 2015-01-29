@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from django.template import RequestContext, loader
 from django.shortcuts import redirect
 from jinja2 import Template as jinja_template
+from django.core.urlresolvers import reverse
 
 import os, shutil, re
 from prettytable import PrettyTable
@@ -87,3 +88,19 @@ def health(request):
         'status' : status
     })
     return HttpResponse(template.render(context))
+
+def backend_set_state(backend_name, state):
+    for server in Server.objects.filter(role_frontend=True):
+        if Member.objects.filter(server=server):
+            man = ConfManager(server.address, server.ssh_user, server.ssh_password, server.ssh_port )
+            if man.connected:
+                man.command('varnishadm backend.set_health %s %s' % (backend_name, state))
+
+def backend_disable(request, backend_name):
+    backend_set_state(backend_name, 'sick')
+    return redirect(reverse('apps.config.views.health'))
+
+def backend_enable(request, backend_name):
+    backend_set_state(backend_name, 'healthy')
+    return redirect(reverse('apps.config.views.health'))
+
