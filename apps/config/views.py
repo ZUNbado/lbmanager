@@ -71,7 +71,14 @@ def health(request):
     
     headers = [ 'Frontals\Backends' ] 
     rows = {}
+    links = {}
     for backend in backends_name:
+        if not backend in links: 
+            enable = reverse('apps.config.views.backend_enable', args = { backend } )
+            disable = reverse('apps.config.views.backend_disable', args = { backend } )
+            link = '%s <a href="%s">E</a>/<a href="%s">D</a>' % (backend, enable, disable)
+            links[backend] = link
+
         headers.append(backend)
         for front in backend_status:
             if not front in rows: rows[front] = []
@@ -81,6 +88,9 @@ def health(request):
     for front, row in rows.items():
         grid.add_row( [ front ] + row )
     grid = grid.get_html_string()
+
+    for backend, link in links.items():
+        grid = grid.replace(backend, link)
 
     template = loader.get_template('tools/backend_health.html')
     context = RequestContext(request, {
