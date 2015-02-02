@@ -15,14 +15,14 @@
                         {% endif %}
 
                         {% if stat.last_update != stat.current_last_update %}
-                        <td bgcolor=red>Server: {{ stat.last_update }}<br />Current: {{ stat.current_last_update }}</td>
+                        <td bgcolor=red>Server: {{ stat.last_update_human }}<br />Current: {{ stat.current_last_update_human }}</td>
                         {% else %}
-                        <td>{{ stat.last_update }}</td>
+                        <td>{{ stat.last_update_human }}</td>
                         {% endif %}
                         {% if stat.last_apply != stat.current_last_apply %}
-                        <td bgcolor=red>Server: {{ stat.last_apply }}<br />Current: {{ stat.current_last_apply }}</td>
+                        <td bgcolor=red>Server: {{ stat.last_apply_human }}<br />Current: {{ stat.current_last_apply_human }}</td>
                         {% else %}
-                        <td>{{ stat.last_apply }}</td>
+                        <td>{{ stat.last_apply_human }}</td>
                         {% endif %}
                 </tr>
                 {% endfor %}

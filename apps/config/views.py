@@ -119,7 +119,7 @@ def database_status(request):
     group = Group.objects.get(pk=1)
     last_update = group.last_update.strftime('%s') if group.last_update else None
     last_apply = group.last_apply.strftime('%s') if group.last_apply else None
-    data = { 'last_update' : last_update, 'last_apply' : last_apply, 'version' : group.version }
+    data = { 'last_update' : last_update, 'last_apply' : last_apply, 'version' : group.version, 'last_update_human' : group.last_update, 'last_apply_human' : group.last_apply }
     return JsonResponse(data)
 
 def get_database_status_all():
@@ -132,6 +132,8 @@ def get_database_status_all():
         stat['current_version'] = group.version
         stat['current_last_update'] = group.last_update.strftime('%s') if group.last_update else None
         stat['current_last_apply'] = group.last_apply.strftime('%s') if group.last_apply else None
+        stat['current_last_update_human'] = group.last_update
+        stat['current_last_apply_human'] = group.last_apply
 
         status.append(stat)
 
