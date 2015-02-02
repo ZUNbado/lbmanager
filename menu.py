@@ -43,6 +43,7 @@ class CustomMenu(Menu):
             items.MenuItem('Tools',
                 children=[
                     items.MenuItem('Backend Health', reverse('apps.config.views.health')),
+                    items.MenuItem('Database Status', reverse('apps.config.views.database_status_all')),
                     ]),
             items.MenuItem('Apply',
                 children=apply_childrens

@@ -21,6 +21,7 @@ def sync(request):
 
     dbfile = '/db.sqlite3'
 
+    if not os.path.exists(config.temp_dir): os.makedirs(config.temp_dir)
     shutil.copy2(root+dbfile, config.temp_dir)
 
     # cal canviar aixo perque agafi els membres d'un cluster enlloc de TOTS els servers (als backends no s'ha de copiar)

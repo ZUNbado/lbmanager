@@ -4,7 +4,7 @@
         {% if module.show_title and module.title %}<h2>{% if module.title_url %}<a href="{{ module.title_url }}">{% trans module.title %}</a>{% else %}{% trans module.title %}{% endif %}</h2>{% endif %}
         <div class="dashboard-module-content">
             <table>
-                <tr><th>Server</th><th>Version</th><th>Last Update</th><th>Last Apply</th></tr>
+                    <tr><th>Server</th><th>Version</th><th>Last Update</th><th>Last Apply</th><th>Need Syncrhonize?</th></tr>
                 {% for stat in module.content %}
                 <tr>
                         <td>{{ stat.backend }}</td>
@@ -23,6 +23,11 @@
                         <td bgcolor=red>Server: {{ stat.last_apply_human }}<br />Current: {{ stat.current_last_apply_human }}</td>
                         {% else %}
                         <td>{{ stat.last_apply_human }}</td>
+                        {% endif %}
+                        {% if stat.version != stat.current_version or stat.last_update != stat.current_last_update or stat.last_apply != stat.current_last_apply %}
+                        <td><a href="/admin/database/custom/sync">Yes</a></td>
+                        {% else %}
+                        <td>No</td>
                         {% endif %}
                 </tr>
                 {% endfor %}
