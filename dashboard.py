@@ -16,7 +16,7 @@ from django.core.urlresolvers import reverse
 from admin_tools.dashboard import modules, Dashboard, AppIndexDashboard
 from admin_tools.dashboard.modules import DashboardModule
 from admin_tools.utils import get_admin_site_name
-from apps.config.views import get_database_status_all
+from apps.config.utils import get_database_status_all
 
 class DashboardText(DashboardModule):
     template = 'admin_tools/dashboard/modules/text.html'
