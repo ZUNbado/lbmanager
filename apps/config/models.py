@@ -1,4 +1,8 @@
 from django.db import models
+from datetime import datetime
+from django.db.models.signals import post_save, post_delete
+from django.contrib.admin.models import LogEntry
+#from receivers import *
 
 class ConfigDefaultAdmin(models.Model):
     enabled = models.BooleanField(default=True)
@@ -15,6 +19,11 @@ class Server(ConfigDefaultAdmin):
     role_backend = models.BooleanField(default=False)
     role_frontend = models.BooleanField(default=False)
 
+    def save(self, *args, **kwargs):
+        super(Server, self).save(*args, **kwargs)
+        group = Group.objects.get(pk=1)
+        group.db_update()
+
     class Meta:
         verbose_name_plural = '2- Server'
 
@@ -30,9 +39,31 @@ class Group(ConfigDefaultAdmin):
     app_path = models.CharField(max_length=200,default='/usr/local/src/lbmanager')
     enable_transfer = models.BooleanField(default=True)
     enable_reload = models.BooleanField(default=True)
+    last_update = models.DateTimeField(null=True,blank=True)
+    last_apply = models.DateTimeField(null=True,blank=True)
+    version = models.IntegerField(default=0)
 
     def __unicode__(self):
         return u"%s" % (self.group.name)
 
+    def db_update(self, save = True):
+        self.version += 1
+        self.last_update = datetime.now()
+        if save: self.save()
+
+    def apply(self):
+        self.last_apply = datetime.now()
+        self.save()
+
     class Meta:
         verbose_name_plural = '1- Group configuration'
+
+
+def db_update(sender, **kwargs):
+    if sender in [ Group, LogEntry ]: save = False
+    else: save = True
+    group = Group.objects.get(pk=1)
+    group.db_update( save = save )
+
+post_save.connect(db_update, dispatch_uid = 'db_update')
+post_delete.connect(db_update, dispatch_uid = 'db_update')

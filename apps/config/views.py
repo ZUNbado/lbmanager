@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.template import RequestContext, loader
 from django.shortcuts import redirect
 from jinja2 import Template as jinja_template
@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 
 import os, shutil, re
 from prettytable import PrettyTable
+import requests
 
 from .models import Group, Server
 from ..cluster.models import Member
@@ -114,3 +115,22 @@ def backend_enable(request, backend_name):
     backend_set_state(backend_name, 'healthy')
     return redirect(reverse('apps.config.views.health'))
 
+def database_status(request):
+    group = Group.objects.get(pk=1)
+    data = { 'last_update' : group.last_update, 'last_apply' : group.last_apply, 'version' : group.version }
+    return JsonResponse(data)
+
+def get_database_status_all():
+    status = []
+    for server in Server.objects.filter(role_cluster=True):
+        stat = requests.get('http://%s:8000/admin/database/custom/database_status' % server.address ).json()
+        stat['backend'] = server.name
+
+        status.append(stat)
+
+    return status
+
+def database_status_all(request):
+    template = loader.get_template('tools/database_status.html')
+    context = RequestContext(request, { 'status' : get_database_status_all() } )
+    return HttpResponse(template.render(context))

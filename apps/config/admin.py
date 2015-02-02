@@ -46,8 +46,19 @@ class ServerAdmin(ConfigDefaultAdmin):
 
 class GroupAdmin(ConfigDefaultAdmin):
     actions = [set_enable_transfer,set_disable_transfer,set_enable_reload,set_disable_reload]
-    fields = [ 'name', 'temp_dir', 'nginx_dir', 'ldirectord_conf', 'varnish_dir', 'graph_dir', 'enable_transfer', 'enable_reload', 'enabled' ]
     list_display = [ 'name', 'enable_transfer', 'enable_reload', 'enabled' ]
+    readonly_fields = ( 'last_update', 'last_apply', 'version' )
+    fieldsets = (
+            (None, {
+                'fields' : ( 'name', 'enabled', 'enable_transfer', 'enable_reload' ),
+                }),
+            ('Configuration dirs/files', {
+                'fields' : ( 'temp_dir', 'nginx_dir', 'ldirectord_conf', 'varnish_dir', 'graph_dir' ),
+                }),
+            ('Status', {
+                'fields' : ( 'last_update', 'last_apply', 'version' ),
+                }),
+            )
 
 admin.site.register(Server, ServerAdmin)
 admin.site.register(Group, GroupAdmin)

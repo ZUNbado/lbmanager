@@ -1,0 +1,13 @@
+{% extends "admin:admin/index.html" %}
+
+{% block content %}
+<div id="content-main">
+        <h3>Database Status</h3>
+                {% for stat in status %}
+                {{ stat }}
+                {% endfor %}
+</div>
+{% endblock %}
+
+{% block sidebar %}
+{% endblock %}
