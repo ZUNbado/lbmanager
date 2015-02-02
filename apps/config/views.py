@@ -121,10 +121,15 @@ def database_status(request):
     return JsonResponse(data)
 
 def get_database_status_all():
+    group = Group.objects.get(pk=1)
+
     status = []
     for server in Server.objects.filter(role_cluster=True):
         stat = requests.get('http://%s:8000/admin/database/custom/database_status' % server.address ).json()
         stat['backend'] = server.name
+        stat['current_version'] = group.version
+        stat['current_last_update'] = group.last_update
+        stat['current_last_apply'] = group.last_apply
 
         status.append(stat)
 
