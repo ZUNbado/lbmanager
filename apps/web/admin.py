@@ -30,7 +30,7 @@ class DomainAdmin(WebDefaultAdmin):
     )
 
 class DomainAliasAdmin(WebDefaultAdmin):
-    list_display = [ 'domain', 'alias', 'enabled' ]
+    list_display = [ 'domain', 'name', 'enabled' ]
     fieldsets = (
         (None, {
             'fields': ('name', 'domain', 'enabled'),
