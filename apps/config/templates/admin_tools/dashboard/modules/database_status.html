@@ -1,0 +1,14 @@
+{% load i18n %}
+{% if not module.is_empty %}
+    <div id="module_{{ module.id }}" class="{{ module.render_css_classes }}">
+        {% if module.show_title and module.title %}<h2>{% if module.title_url %}<a href="{{ module.title_url }}">{% trans module.title %}</a>{% else %}{% trans module.title %}{% endif %}</h2>{% endif %}
+        <div class="dashboard-module-content">
+            <table>
+                <tr><th>Server</th><th>Version</th><th>Last Update</th><th>Last Apply</th></tr>
+                {% for stat in module.content %}
+                <tr><td>{{ stat.backend }}</td><td>{{ stat.version }}</td><td>{{ stat.last_update }}</td><td>{{ stat.last_apply }}</td></tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+{% endif %}

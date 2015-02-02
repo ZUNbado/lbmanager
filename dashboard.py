@@ -16,6 +16,7 @@ from django.core.urlresolvers import reverse
 from admin_tools.dashboard import modules, Dashboard, AppIndexDashboard
 from admin_tools.dashboard.modules import DashboardModule
 from admin_tools.utils import get_admin_site_name
+from apps.config.views import get_database_status_all
 
 class DashboardText(DashboardModule):
     template = 'admin_tools/dashboard/modules/text.html'
@@ -56,6 +57,13 @@ class CustomIndexDashboard(Dashboard):
             title='Text module',
             content='Content text',
             pre_content='PRE Content text',
+            ))
+
+        self.children.append(DashboardText(
+            title='Database Status',
+            template = 'admin_tools/dashboard/modules/database_status.html',
+            content = get_database_status_all(),
+            pre_content = 'test'
             ))
 
         if user.has_module_perms('cluster'):

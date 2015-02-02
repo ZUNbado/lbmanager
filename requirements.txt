@@ -5,3 +5,4 @@ django-admin-bootstrapped==2.1.0
 paramiko==1.10.1
 django-admin-tools
 prettytable
+requests

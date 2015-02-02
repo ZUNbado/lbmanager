@@ -3,9 +3,12 @@
 {% block content %}
 <div id="content-main">
         <h3>Database Status</h3>
+        <table>
+                <tr><th>Server</th><th>Version</th><th>Last Update</th><th>Last Apply</th></tr>
                 {% for stat in status %}
-                {{ stat }}
+                <tr><td>{{ stat.backend }}</td><td>{{ stat.version }}</td><td>{{ stat.last_update }}</td><td>{{ stat.last_apply }}</td></tr>
                 {% endfor %}
+        </table>
 </div>
 {% endblock %}
 
