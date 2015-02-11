@@ -16,7 +16,7 @@ def apply(request):
         tempdir=group.temp_dir+'/'+str(group.id)
         FilesManager.DirExists(tempdir)
 
-        clusters = Cluster.objects.filter(enabled=True,group=group)
+        clusters = Cluster.objects.filter(enabled=True)
 
         tpl = loader.get_template('conf/ldirectord.cf.j2')
         ctx = RequestContext(request, { 'clusters' : clusters })
@@ -29,7 +29,7 @@ def apply(request):
             final_members[server.name]=server
         if len(final_members) == 0:
             # Get all servers from a group
-            clusters=Cluster.objects.filter(group=group)
+            clusters=Cluster.objects.all()
             for cluster in clusters:
                 members=Member.objects.filter(cluster=cluster)
                 for member in members:

@@ -18,7 +18,7 @@ def apply(request):
         tempdir=group.temp_dir+'/'+str(group.id)
         FilesManager.DirExists(tempdir)
 
-        directors = Director.objects.filter(enabled=True,group=group)
+        directors = Director.objects.filter(enabled=True)
         backends = []
         for director in directors:
             for backend in director.backends.all():
@@ -32,7 +32,7 @@ def apply(request):
         content.append({ 'group': group.name, 'content': tpl_content })
 
         # Get all servers from a group
-        clusters=Cluster.objects.filter(group=group)
+        clusters=Cluster.objects.all()
         final_members = {}
         for cluster in clusters:
             members=Member.objects.filter(cluster=cluster)
@@ -47,7 +47,7 @@ def apply(request):
                 man=ConfManager(member.server.address, member.server.ssh_user, member.server.ssh_password, member.server.ssh_port )
                 if man.connected:
                     if group.enable_transfer is  True:
-                        man.copy(tempdir+'/backend.vcl',group.varnish_dir+'/default.vcl')
+                        man.copy(tempdir+'/backend.vcl',group.varnish_dir+'/backend.vcl')
                         msg = "Files transferred"
                     else:
                         msg = "Transfer files disabled"

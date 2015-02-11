@@ -23,7 +23,7 @@ def apply(request):
         vfiles = []
         afiles = []
         for vhost in NginxVirtualHost.objects.filter(enabled=True):
-            if vhost.cluster.filter(group=group).count() > 0:
+            if vhost.cluster.all().count() > 0:
                 domains = Domain.objects.filter(enabled=True,virtual_host=vhost)
                 aliases = DomainAlias.objects.filter(enabled=True,domain=domains)
                 hostRedirs = HostRedir.objects.filter(enabled=True,domain=domains)
@@ -43,7 +43,7 @@ def apply(request):
                     afiles.append({ 'file': str(vhost.id)+"."+str(location.id)+'.passwd', 'content': a_content })
 
         # Get all servers from a group
-        clusters=Cluster.objects.filter(group=group)
+        clusters=Cluster.objects.all()
         final_members = {}
         for cluster in clusters:
             members=Member.objects.filter(cluster=cluster)

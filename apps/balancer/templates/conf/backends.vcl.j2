@@ -45,15 +45,9 @@ director {{ director.name }} {{ director.dirtype }} {
 
 
 sub vcl_recv {
-    # Varnish-agent Dashboard
-    set req.http.X-Full-Uri = req.http.host + req.url;
-    set client.identity = req.http.X-Forwarded-For;
-
     {%- for director in directors %}
     if (req.http.X-vns-director == "{{ director.name }}") { set req.backend = {{ director.name }};}
     {% endfor -%}
-
-    # custom here
 }
 
 
