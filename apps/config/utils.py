@@ -89,7 +89,7 @@ def health( html = True):
         if not backend in links:
             enable = reverse('apps.config.views.backend_enable', args = { backend } )
             disable = reverse('apps.config.views.backend_disable', args = { backend } )
-            link = '%s <a href="%s">E</a>/<a href="%s">D</a>' % (backend, enable, disable)
+            link = '%s <a href="%s"><img src="/static/config/images/start.png"></a>/<a href="%s"><img src="/static/config/images/stop.png"></a>' % (backend, enable, disable)
             links[backend] = link
 
         headers.append(backend) 
@@ -102,6 +102,7 @@ def health( html = True):
         grid.add_row( [ front ] + row )
     
     if html:
+        grid.attributes = { 'width' : '1200' }
         grid = grid.get_html_string() 
         for backend, link in links.items():
             grid = grid.replace(backend, link)

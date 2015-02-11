@@ -54,6 +54,6 @@ docs/_build/
 target/
 
 # Static
-static/
+/static/
 # local database
 db.sqlite3
