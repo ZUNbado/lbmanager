@@ -39,7 +39,7 @@ class Cluster(ClusterDefaults):
     )
     name = models.CharField(max_length=200)
     backends = models.ManyToManyField(Member)
-    group = models.ForeignKey(Group)
+    #group = models.ForeignKey(Group)
     address = models.IPAddressField()
     port = models.IntegerField(default=80)
     ssl = models.BooleanField(default=False)

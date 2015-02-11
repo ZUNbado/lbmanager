@@ -23,10 +23,10 @@ class MemberAdmin(ClusterDefaultAdmin):
         return form
 
 class ClusterAdmin(ClusterDefaultAdmin):
-    list_display = ('name', 'address', 'port', 'group', 'ssl', 'ssl_port', 'enabled')
+    list_display = ('name', 'address', 'port', 'ssl', 'ssl_port', 'enabled')
     fieldsets = (
         (None, {
-            'fields': ('name', 'backends', 'group', 'address', 'port', 'mode', 'ssl', 'ssl_port', 'enabled')
+            'fields': ('name', 'backends', 'address', 'port', 'mode', 'ssl', 'ssl_port', 'enabled')
         }),
         ('Advanced options', {
             'classes': ('collapse',),

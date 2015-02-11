@@ -14,8 +14,8 @@ class NginxDefaults(models.Model):
         abstract = True
 
 # Clase per opcions de nginx, encara per definir
-class HostConfig(NginxDefaults):
-    group = models.ForeignKey(Group)
+#class HostConfig(NginxDefaults):
+#    group = models.ForeignKey(Group)
 
 class AuthUser(NginxDefaults):
     name = models.CharField(max_length=200)

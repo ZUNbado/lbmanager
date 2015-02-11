@@ -36,8 +36,8 @@ class BackendAdmin(BalancerDefaultAdmin):
 
 
 class DirectorAdmin(BalancerDefaultAdmin):
-    fields = ('name', 'backends', 'dirtype', 'group', 'enabled')
-    list_display = ('name', 'dirtype', 'group', 'enabled')
+    fields = ('name', 'backends', 'dirtype', 'enabled')
+    list_display = ('name', 'dirtype', 'enabled')
 
 admin.site.register(Director, DirectorAdmin)
 admin.site.register(Backend, BackendAdmin)

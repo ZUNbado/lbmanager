@@ -43,7 +43,7 @@ class Director(BalancerDefaults):
     )
     name = models.CharField(max_length=200)
     backends = models.ManyToManyField(Backend)
-    group = models.ForeignKey(Group)
+    #group = models.ForeignKey(Group)
     dirtype = models.CharField(max_length=200,choices=TYPES,default='round-robin', verbose_name=u"Director type")
 
     class Meta:

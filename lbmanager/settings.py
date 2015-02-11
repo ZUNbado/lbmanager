@@ -114,5 +114,4 @@ ADMIN_TOOLS_APP_INDEX_DASHBOARD = 'dashboard.CustomAppIndexDashboard'
 
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'static')
-print STATIC_ROOT
 STATIC_URL = '/static/'

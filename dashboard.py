@@ -103,19 +103,10 @@ class CustomIndexDashboard(Dashboard):
 
         
 class CustomAppIndexDashboard(AppIndexDashboard):
-    """
-    Custom app index dashboard for lbmanager.
-    """
-
-    # we disable title because its redundant with the model list module
     title = ''
 
     def __init__(self, *args, **kwargs):
         AppIndexDashboard.__init__(self, *args, **kwargs)
 
-
     def init_with_context(self, context):
-        """
-        Use this method if you need to access the request context.
-        """
         return super(CustomAppIndexDashboard, self).init_with_context(context)

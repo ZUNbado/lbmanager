@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import HostConfig, NginxVirtualHost, AuthUser, Location
+from .models import NginxVirtualHost, AuthUser, Location
 
 class LocationInline(admin.StackedInline):
     model = Location
@@ -53,7 +53,6 @@ class AuthUserAdmin(admin.ModelAdmin):
         }),
     )
 
-admin.site.register(HostConfig)
 admin.site.register(NginxVirtualHost, NginxVirtualHostAdmin)
 admin.site.register(AuthUser, AuthUserAdmin)
 #admin.site.register(Location, LocationAdmin)
