@@ -35,8 +35,6 @@ INSTALLED_APPS = (
     'admin_tools.theming',
     'admin_tools.menu',
     'admin_tools.dashboard',
-#    'django_admin_bootstrapped.bootstrap3',
-#    'django_admin_bootstrapped',
     'apps.web',
     'apps.balancer',
     'apps.cluster',
