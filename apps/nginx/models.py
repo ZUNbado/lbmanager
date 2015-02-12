@@ -38,6 +38,7 @@ class Location(NginxDefaults):
     name = models.CharField(max_length=200)
     path_url = models.CharField(max_length=200)
     nginx_virtualhost = models.ForeignKey('NginxVirtualHost')
+    access_log = models.CharField(max_length=200,null=True,blank=True)
     backend_type = models.CharField(max_length=5,choices=TYPES,default='proxy',null=True,blank=True)
     director = models.ForeignKey(Director,null=True,blank=True)
     path_fs = models.CharField(max_length=200,null=True,blank=True)
@@ -66,6 +67,7 @@ class NginxVirtualHost(NginxDefaults):
         (location, created) = Location.objects.get_or_create(path_url='/', nginx_virtualhost = self)
         if created:
             location.name = 'Default'
+            if self.access_log: location.access_log = self.access_log
             location.save()
 
     def get_clusters(self):

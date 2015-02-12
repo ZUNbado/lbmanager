@@ -1,4 +1,4 @@
-map http_host $backend_{{ virtualhost.id }} {
+map $http_host $backend_{{ virtualhost.id }} {
 {%- for domain in domains %}
     {{ domain.name }}   {{ domain.director.name }};
 {%- endfor %}
@@ -31,7 +31,8 @@ map $http_host $site_redir_{{ virtualhost.id }} {
 
 server {
 {%- for cluster in virtualhost.cluster.all() %}
-    listen {{ cluster.address }}:{{ cluster.port }}{% if cluster.ssl == True %} ssl{% endif %};
+    listen {{ cluster.address }}:{{ cluster.port }};
+    {% if cluster.ssl == True %}listen {{ cluster.address }}:{{ cluster.ssl_port }} ssl{% endif %};
 {%- endfor %}
 
     {%- if domains|length > 0 %}
@@ -56,9 +57,9 @@ server {
         proxy_set_header    X-Forwarded-For         $proxy_add_x_forwarded_for;
         proxy_set_header    X-Forwarded-Proto       $scheme;
         {%- if location.director != None %}
-        proxy_set_header    X-vns-director          {{ location.director.name }};
+        proxy_set_header    X-Director              {{ location.director.name }};
         {%- else %}
-        proxy_set_header    X-vns-director          $backend_{{ virtualhost.id }};
+        proxy_set_header    X-Director              $backend_{{ virtualhost.id }};
         {%- endif %}
         proxy_set_header    X-enablecache           $cache_{{ virtualhost.id }};
         proxy_buffering     off;
@@ -81,6 +82,9 @@ server {
         {%- if location.auth_basic_enabled == True %}
         auth_basic  "{{ location.auth_basic_msg }}";
         auth_basic_user_file "auth/{{ virtualhost.id }}.{{ location.id }}.passwd";
+        {%- endif %}
+        {%- if location.access_log %}
+        access_log {{ location.access_log }};
         {%- endif %}
     }
 {%- endfor %}

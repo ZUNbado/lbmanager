@@ -43,11 +43,8 @@ director {{ director.name }} {{ director.dirtype }} {
 }
 {%- endfor %}
 
-
 sub vcl_recv {
     {%- for director in directors %}
-    if (req.http.X-vns-director == "{{ director.name }}") { set req.backend = {{ director.name }};}
-    {% endfor -%}
+    if (req.http.X-Director == "{{ director.name }}") { set req.backend = {{ director.name }};}
+    {%- endfor %}
 }
-
-

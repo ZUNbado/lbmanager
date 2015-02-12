@@ -8,7 +8,7 @@ class LocationInline(admin.StackedInline):
     #list_editable = [ 'auth_basic_enabled', 'ip_allow_enabled', 'enabled' ]
     fieldsets = (
         (None, {
-            'fields': ('name', 'path_url', 'enabled'),
+            'fields': ('name', 'path_url', 'access_log', 'enabled'),
         }),
         ('Backend', {
             'fields': ('backend_type', 'director', 'path_fs'),
