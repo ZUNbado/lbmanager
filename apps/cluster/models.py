@@ -38,17 +38,22 @@ class Cluster(ClusterDefaults):
     )
     name = models.CharField(max_length=200)
     backends = models.ManyToManyField(Member)
+    backends.verbose_name = 'Members'
     address = models.IPAddressField()
     port = models.IntegerField(default=80)
+    port.verbose_name = 'Plain Port'
     ssl = models.BooleanField(default=False)
-    ssl_port = models.IntegerField(default=443)
+    ssl_port = models.IntegerField(default=443,blank=True,null=True)
+    ssl_port.verbose_name = 'SSL Port'
     mode = models.CharField(
         max_length=4,
         choices=CLUSTER_MODES,
         default='gate',
     )
     fallback_ip = models.IPAddressField(blank=True,null=True, verbose_name=u"IP")
+    fallback_ip.verbose_name = 'Fallback Address'
     fallback_port = models.IntegerField(blank=True,null=True, verbose_name=u"Port")
+    fallback_port.verbose_name = 'Fallback Port'
     scheduler = models.CharField(
         max_length = 5,
         choices=SCHEDULER_MODES,
@@ -63,6 +68,7 @@ class Cluster(ClusterDefaults):
             ( 'udp', 'UDP' ),
         ),
         default='tcp',
+        blank=True,null=True
     )
 
     def __unicode__(self):

@@ -33,17 +33,23 @@ class Location(NginxDefaults):
         ('files', 'Static'),
     )
     name = models.CharField(max_length=200)
+    name.verbose_name = 'Description'
     path_url = models.CharField(max_length=200)
+    path_url.verbose_name = 'Path URL'
     nginx_virtualhost = models.ForeignKey('NginxVirtualHost')
     access_log = models.CharField(max_length=200,null=True,blank=True)
     backend_type = models.CharField(max_length=5,choices=TYPES,default='proxy',null=True,blank=True)
+    backend_type.verbose_name = 'Backend Mode'
     director = models.ForeignKey(Director,null=True,blank=True)
     path_fs = models.CharField(max_length=200,null=True,blank=True)
+    path_fs.verbose_name = 'Path FS'
     auth_basic_enabled = models.BooleanField(default=False)
     auth_basic_msg = models.CharField(max_length=200,null=True,blank=True)
     users = models.ManyToManyField(AuthUser,null=True,blank=True)
     ip_allow_enabled = models.BooleanField(default=False)
+    ip_allow_enabled.verbose_name = 'Enabled IP Restriction'
     ip_allow_list = models.CharField(max_length=200,null=True,blank=True)
+    ip_allow_list.verbose_name = 'Allowed list IP'
 
 class NginxVirtualHost(NginxDefaults):
     REDIRECTS = (
@@ -53,11 +59,16 @@ class NginxVirtualHost(NginxDefaults):
     name = models.CharField(max_length=200)
     cluster = models.ManyToManyField(Cluster)
     extraconf = models.TextField(null=True,blank=True)
+    extraconf.verbose_name = 'Extra Configuration'
     access_log = models.CharField(max_length=200,null=True,blank=True)
-    redirect_type = models.IntegerField(choices=REDIRECTS,default=301)
+    redirect_type = models.IntegerField(choices=REDIRECTS,default=301,blank=True,null=True)
+    redirect_type.verbose_name = 'Default redirect'
     ssl_cert = models.TextField(null=True,blank=True)
+    ssl_cert.verbose_name = 'SSL Certificate'
     ssl_key = models.TextField(null=True,blank=True)
+    ssl_key.verbose_name = 'SSL Key'
     ssl_ca = models.TextField(null=True,blank=True)
+    ssl_ca.verbose_name = 'SSL CA'
 
     def save(self, *args, **kwargs):
         super(NginxVirtualHost, self).save(*args, **kwargs)

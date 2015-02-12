@@ -55,6 +55,9 @@ class GroupAdmin(ConfigDefaultAdmin):
             ('Configuration dirs/files', {
                 'fields' : ( 'temp_dir', 'nginx_dir', 'ldirectord_conf', 'varnish_dir', 'graph_dir' ),
                 }),
+            ('Application', {
+                'fields' : ( 'app_path', 'admin_port' ),
+                }),
             ('Status', {
                 'fields' : ( 'last_update', 'last_apply', 'version' ),
                 }),
