@@ -1,0 +1,20 @@
+{% extends "admin:admin/change_form.html" %}
+{% load i18n admin_urls admin_static admin_modify admin_tools_menu_tags %}
+
+
+{% block extrastyle %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="{% static "admin/css/forms.css" %}" />
+{% if user.is_active and user.is_staff %}
+{% if not is_popup %}
+{% admin_tools_render_menu_css %}
+{% endif %}
+{% endif %}
+{% endblock %}
+
+
+{% if not is_popup %}
+{% block breadcrumbs %}
+{% endblock %}
+{% endif %}
+

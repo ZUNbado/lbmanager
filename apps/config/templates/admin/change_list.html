@@ -1,0 +1,16 @@
+{% extends "admin:admin/change_list.html" %}
+{% load i18n admin_urls admin_static admin_list admin_tools_menu_tags %}
+
+{% block extrastyle %}
+{{ block.super }}
+{% if user.is_active and user.is_staff %}
+{% if not is_popup %}
+{% admin_tools_render_menu_css %}
+{% endif %}
+{% endif %}
+{% endblock %}
+
+{% if not is_popup %}
+{% block breadcrumbs %}
+{% endblock %}
+{% endif %}
