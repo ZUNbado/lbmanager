@@ -86,13 +86,13 @@ def health( html = True):
     rows = {}
     links = {}
     for backend in backends_name:
-        if not backend in links:
+        if not '##%s##' % backend in links:
             enable = reverse('apps.config.views.backend_enable', args = { backend } )
             disable = reverse('apps.config.views.backend_disable', args = { backend } )
             link = '%s <a href="%s"><img src="/static/config/images/start.png"></a>/<a href="%s"><img src="/static/config/images/stop.png"></a>' % (backend, enable, disable)
-            links[backend] = link
+            links['##%s##' % backend] = link
 
-        headers.append(backend) 
+        headers.append('##%s##' % backend) 
         for front in backend_status:
             if not front in rows: rows[front] = []
             rows[front].append(backend_status[front][backend]['status'])
