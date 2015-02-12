@@ -14,10 +14,6 @@ class Member(ClusterDefaults):
     def __unicode__(self):
         return u"%s / %s:%d" % (self.server.name, self.server.address, self.port)
 
-    class Meta:
-        verbose_name_plural = "1- Member"
-
-
 class Cluster(ClusterDefaults):
     CLUSTER_MODES = (
         ( 'gate', 'Direct' ),
@@ -39,7 +35,6 @@ class Cluster(ClusterDefaults):
     )
     name = models.CharField(max_length=200)
     backends = models.ManyToManyField(Member)
-    #group = models.ForeignKey(Group)
     address = models.IPAddressField()
     port = models.IntegerField(default=80)
     ssl = models.BooleanField(default=False)
@@ -69,6 +64,3 @@ class Cluster(ClusterDefaults):
 
     def __unicode__(self):
         return u"%s" % (self.name)
-
-    class Meta:
-        verbose_name_plural = "2- Cluster"

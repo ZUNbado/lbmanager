@@ -2,7 +2,6 @@ from django.db import models
 from datetime import datetime
 from django.db.models.signals import post_save, post_delete
 from django.contrib.admin.models import LogEntry
-#from receivers import *
 
 class ConfigDefaultAdmin(models.Model):
     enabled = models.BooleanField(default=True)
@@ -23,9 +22,6 @@ class Server(ConfigDefaultAdmin):
         super(Server, self).save(*args, **kwargs)
         group = Group.objects.get(pk=1)
         group.db_update()
-
-    class Meta:
-        verbose_name_plural = '2- Server'
 
 class Group(ConfigDefaultAdmin):
     name = models.CharField(max_length=200)
@@ -54,10 +50,6 @@ class Group(ConfigDefaultAdmin):
     def apply(self):
         self.last_apply = datetime.now()
         self.save()
-
-    class Meta:
-        verbose_name_plural = '1- Group configuration'
-
 
 def db_update(sender, **kwargs):
     if sender in [ Group, LogEntry ]: save = False

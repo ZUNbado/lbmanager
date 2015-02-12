@@ -1,7 +1,6 @@
 from django.db import models
 from ..config.models import Server, Group
 
-
 class BalancerDefaults(models.Model):
     enabled = models.BooleanField(default=True)
     def __str__(self):
@@ -9,7 +8,6 @@ class BalancerDefaults(models.Model):
 
     class Meta:
         abstract = True
-
 
 class Backend(BalancerDefaults):
     name = models.CharField(max_length=200)
@@ -26,9 +24,6 @@ class Backend(BalancerDefaults):
     probe_window = models.IntegerField(null=True,blank=True, verbose_name=u"Window")
     probe_threshold = models.IntegerField(null=True,blank=True, verbose_name=u"Threshold")
    
-    class Meta:
-        verbose_name_plural = '1- Backend'
-
 class Director(BalancerDefaults):
     TYPES = (
         ( 'Random', (
@@ -43,8 +38,4 @@ class Director(BalancerDefaults):
     )
     name = models.CharField(max_length=200)
     backends = models.ManyToManyField(Backend)
-    #group = models.ForeignKey(Group)
     dirtype = models.CharField(max_length=200,choices=TYPES,default='round-robin', verbose_name=u"Director type")
-
-    class Meta:
-        verbose_name_plural = '2- Director'

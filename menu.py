@@ -26,13 +26,13 @@ class CustomMenu(Menu):
         user = context['request'].user
         apply_childrens = []
         if user.has_module_perms('cluster'):
-            apply_childrens.append(items.MenuItem('Cluster', '/admin/cluster/custom/apply'))
+            apply_childrens.append(items.MenuItem('Service IP Cluster', '/admin/cluster/custom/apply'))
+        if user.has_module_perms('nginx'):
+            apply_childrens.append(items.MenuItem('HTTP Frontend + SSL', '/admin/nginx/custom/apply'))
+        if user.has_module_perms('balancer'):
+            apply_childrens.append(items.MenuItem('Load Balancer', '/admin/balancer/custom/apply'))
         if user.has_module_perms('web'):
             apply_childrens.append(items.MenuItem('Web Sites', '/admin/nginx/custom/apply'))
-        if user.has_module_perms('nginx'):
-            apply_childrens.append(items.MenuItem('Frontend', '/admin/nginx/custom/apply'))
-        if user.has_module_perms('balancer'):
-            apply_childrens.append(items.MenuItem('Balancer', '/admin/balancer/custom/apply'))
 
         # All user with rights to login admin
         apply_childrens.append(items.MenuItem('Database', '/admin/database/custom/sync'))
@@ -51,11 +51,11 @@ class CustomMenu(Menu):
             items.MenuItem(
                 _('Applications'),
                 children=[
-                    items.ModelList('1- Service IP Cluster', models=('apps.cluster.*',)),
-                    items.ModelList('2- HTTP Frontend + SSL', models=('apps.nginx.*',)),
-                    items.ModelList('3- Load Balancer', models=('apps.balancer.*',)),
-                    items.ModelList('4- Web Sites', models=('apps.web.*',)),
-                    items.ModelList('5- Configuration', models=('apps.config.*',)),
+                    items.ModelList('Service IP Cluster', models=('apps.cluster.*',)),
+                    items.ModelList('HTTP Frontend + SSL', models=('apps.nginx.*',)),
+                    items.ModelList('Load Balancer', models=('apps.balancer.*',)),
+                    items.ModelList('Web Sites', models=('apps.web.*',)),
+                    items.ModelList('Configuration', models=('apps.config.*',)),
                     ]),
             items.AppList(
                 _('Administration'),

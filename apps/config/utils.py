@@ -71,10 +71,13 @@ def health( html = True):
                 if not server.name in backend_status: backend_status[server.name] = {}
                 man.command('varnishadm backend.list')
                 regex = '([A-Za-z0-9_]+)\(\d+\.\d+\.\d+\.\d+,,\d+\)\s+\d+\s+(\w+)\s+(\w+)\s+([a-zA-Z0-9\(\) |0-9\/]+)'
-                for (bck_name, bck_status, bck_health, bck_probe) in  re.findall(regex, man.stdout.read(), re.S | re.M):
+                regex = '([A-Za-z0-9_]+)\(\d+\.\d+\.\d+\.\d+,,\d+\)\s+\d+\s+(\w+)\s+(\w+\s+[a-zA-Z0-9\(\) |0-9\/]+)'
+                for (bck_name, bck_health, bck_status) in  re.findall(regex, man.stdout.read(), re.S | re.M):
                     if not bck_name in backends_name: backends_name.append(bck_name)
                     if not bck_name in backend_status[server.name]: backend_status[server.name][bck_name] = {}
-                    backend_status[server.name][bck_name] = { 'name' : bck_name, 'status' : bck_status, 'health' : bck_health, 'probe' : bck_probe }
+                    if bck_health in [ 'probe', 'healthy' ]: bck_health = 'Enabled'
+                    else: bck_health = 'Disabled'
+                    backend_status[server.name][bck_name] = { 'name' : bck_name, 'status' : bck_status, 'health' : bck_health }
 
                 msg = "Data received"
             else:
@@ -95,7 +98,7 @@ def health( html = True):
         headers.append('##%s##' % backend) 
         for front in backend_status:
             if not front in rows: rows[front] = []
-            rows[front].append(backend_status[front][backend]['status'])
+            rows[front].append('%s / %s' % ( backend_status[front][backend]['health'] ,backend_status[front][backend]['status']))
 
     grid = PrettyTable( headers )
     for front, row in rows.items():

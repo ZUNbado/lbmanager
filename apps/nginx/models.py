@@ -13,10 +13,6 @@ class NginxDefaults(models.Model):
     class Meta:
         abstract = True
 
-# Clase per opcions de nginx, encara per definir
-#class HostConfig(NginxDefaults):
-#    group = models.ForeignKey(Group)
-
 class AuthUser(NginxDefaults):
     name = models.CharField(max_length=200)
     password = models.CharField(max_length=200)
@@ -28,7 +24,8 @@ class AuthUser(NginxDefaults):
         super(AuthUser, self).save(*args, **kwargs)
         
     class Meta:
-        verbose_name_plural = '2- Web Auth Users'
+        verbose_name_plural = 'Web Auth Users'
+        verbose_name = 'Web Auth User'
 
 class Location(NginxDefaults):
     TYPES = (
@@ -86,4 +83,5 @@ class NginxVirtualHost(NginxDefaults):
     get_ssl.short_description = 'SSL Enabled'
 
     class Meta:
-        verbose_name_plural = '1- VirtualHost'
+        verbose_name_plural = 'VirtualHost'
+        verbose_name = 'VirtualHost'
