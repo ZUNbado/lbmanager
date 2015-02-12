@@ -23,6 +23,9 @@ class Server(ConfigDefaultAdmin):
         group = Group.objects.get(pk=1)
         group.db_update()
 
+    class Meta:
+        verbose_name = 'Server'
+
 class Group(ConfigDefaultAdmin):
     name = models.CharField(max_length=200)
     temp_dir = models.CharField(max_length=200)
@@ -50,6 +53,9 @@ class Group(ConfigDefaultAdmin):
     def apply(self):
         self.last_apply = datetime.now()
         self.save()
+
+    class Meta:
+        verbose_name = 'Group'
 
 def db_update(sender, **kwargs):
     if sender in [ Group, LogEntry ]: save = False

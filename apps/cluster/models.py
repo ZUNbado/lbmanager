@@ -14,6 +14,9 @@ class Member(ClusterDefaults):
     def __unicode__(self):
         return u"%s / %s:%d" % (self.server.name, self.server.address, self.port)
 
+    class Meta:
+        verbose_name = 'Member'
+
 class Cluster(ClusterDefaults):
     CLUSTER_MODES = (
         ( 'gate', 'Direct' ),
@@ -64,3 +67,6 @@ class Cluster(ClusterDefaults):
 
     def __unicode__(self):
         return u"%s" % (self.name)
+
+    class Meta:
+        verbose_name = 'Service IP Cluster'

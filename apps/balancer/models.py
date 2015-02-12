@@ -23,6 +23,9 @@ class Backend(BalancerDefaults):
     probe_interval = models.IntegerField(null=True,blank=True, verbose_name=u"Interval")
     probe_window = models.IntegerField(null=True,blank=True, verbose_name=u"Window")
     probe_threshold = models.IntegerField(null=True,blank=True, verbose_name=u"Threshold")
+
+    class Meta:
+        verbose_name = 'Backend'
    
 class Director(BalancerDefaults):
     TYPES = (
@@ -39,3 +42,6 @@ class Director(BalancerDefaults):
     name = models.CharField(max_length=200)
     backends = models.ManyToManyField(Backend)
     dirtype = models.CharField(max_length=200,choices=TYPES,default='round-robin', verbose_name=u"Director type")
+
+    class Meta:
+        verbose_name = 'Director'

@@ -16,6 +16,9 @@ class Domain(WebDefaults):
     virtual_host = models.ForeignKey(NginxVirtualHost)
     director = models.ForeignKey(Director)
     cache = models.BooleanField(default=True)
+
+    class Meta:
+        verbose_name = 'Domain'
     
 class DomainAlias(WebDefaults):
     name = models.CharField(max_length=200)
@@ -27,13 +30,19 @@ class DomainAlias(WebDefaults):
     alias.short_description = 'Domain Alias'
 
     class Meta:
-        verbose_name_plural = "Domain Alias"
+        verbose_name = "Domain Alias"
 
 class HostRedir(WebDefaults):
     name = models.CharField(max_length=200)
     domain = models.ForeignKey(Domain)
+
+    class Meta:
+        verbose_name = 'Host Redir'
     
 class UrlRedir(WebDefaults):
     name = models.CharField(max_length=200)
     url = models.CharField(max_length=200)
     virtual_host = models.ForeignKey(NginxVirtualHost)
+
+    class Meta:
+        verbose_name = 'URL Redir'
