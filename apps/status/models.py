@@ -17,7 +17,10 @@ class Graph(models.Model):
         unique_together = ('graph', 'server')
 
     def get_dir(self):
-        config = Group.objects.get(enabled=True)
+        try:
+            config = Group.objects.get(pk=1)
+        except:
+            return False
         hostname = socket.gethostname()
         return '/'.join([config.graph_dir, hostname])
 

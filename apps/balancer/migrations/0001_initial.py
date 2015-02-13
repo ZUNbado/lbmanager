@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
                 ('server', models.ForeignKey(to='config.Server')),
             ],
             options={
-                'verbose_name_plural': '1- Backend',
+                'verbose_name': 'Backend',
             },
             bases=(models.Model,),
         ),
@@ -43,10 +43,9 @@ class Migration(migrations.Migration):
                 ('name', models.CharField(max_length=200)),
                 ('dirtype', models.CharField(default=b'round-robin', max_length=200, verbose_name='Director type', choices=[(b'Random', ((b'random', b'Random'), (b'client', b'Client'), (b'hash', b'Hash'))), (b'round-robin', b'Round Robin'), (b'dns', b'DNS'), (b'fallback', b'Fallback')])),
                 ('backends', models.ManyToManyField(to='balancer.Backend')),
-                ('group', models.ForeignKey(to='config.Group')),
             ],
             options={
-                'verbose_name_plural': '2- Director',
+                'verbose_name': 'Director',
             },
             bases=(models.Model,),
         ),

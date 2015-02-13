@@ -7,7 +7,7 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('config', '0004_group_graph_dir'),
+        ('config', '0001_initial'),
     ]
 
     operations = [

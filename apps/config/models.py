@@ -2,6 +2,7 @@ from django.db import models
 from datetime import datetime
 from django.db.models.signals import post_save, post_delete
 from django.contrib.admin.models import LogEntry
+from django.contrib.contenttypes.models import ContentType
 
 class ConfigDefaultAdmin(models.Model):
     enabled = models.BooleanField(default=True)
@@ -23,8 +24,11 @@ class Server(ConfigDefaultAdmin):
 
     def save(self, *args, **kwargs):
         super(Server, self).save(*args, **kwargs)
-        group = Group.objects.get(pk=1)
-        group.db_update()
+        try:
+            group = Group.objects.get(pk=1)
+            group.db_update()
+        except:
+            pass
 
     class Meta:
         verbose_name = 'Server'
@@ -68,10 +72,13 @@ class Group(ConfigDefaultAdmin):
         verbose_name = 'Group'
 
 def db_update(sender, **kwargs):
-    if sender in [ Group, LogEntry ]: save = False
+    if sender in [ Group, LogEntry, ContentType ]: save = False
     else: save = True
-    group = Group.objects.get(pk=1)
-    group.db_update( save = save )
+    try:
+        group = Group.objects.get(pk=1)
+        group.db_update( save = save )
+    except:
+        pass
 
 post_save.connect(db_update, dispatch_uid = 'db_update')
 post_delete.connect(db_update, dispatch_uid = 'db_update')

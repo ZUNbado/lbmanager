@@ -7,7 +7,7 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('balancer', '__first__'),
+        ('balancer', '0001_initial'),
         ('nginx', '0001_initial'),
     ]
 
@@ -23,7 +23,7 @@ class Migration(migrations.Migration):
                 ('virtual_host', models.ForeignKey(to='nginx.NginxVirtualHost')),
             ],
             options={
-                'verbose_name_plural': '1- Domain',
+                'verbose_name': 'Domain',
             },
             bases=(models.Model,),
         ),
@@ -36,7 +36,7 @@ class Migration(migrations.Migration):
                 ('domain', models.ForeignKey(to='web.Domain')),
             ],
             options={
-                'verbose_name_plural': '2- Domain Alias',
+                'verbose_name': 'Domain Alias',
             },
             bases=(models.Model,),
         ),
@@ -49,7 +49,7 @@ class Migration(migrations.Migration):
                 ('domain', models.ForeignKey(to='web.Domain')),
             ],
             options={
-                'verbose_name_plural': '3- Host Redir',
+                'verbose_name': 'Host Redir',
             },
             bases=(models.Model,),
         ),
@@ -63,7 +63,7 @@ class Migration(migrations.Migration):
                 ('virtual_host', models.ForeignKey(to='nginx.NginxVirtualHost')),
             ],
             options={
-                'verbose_name_plural': '4- URL Redir',
+                'verbose_name': 'URL Redir',
             },
             bases=(models.Model,),
         ),
