@@ -31,7 +31,10 @@ class BackendAdmin(BalancerDefaultAdmin):
 
     def get_form(self, request, obj=None, **kwargs):
         form = super(BackendAdmin, self).get_form(request, obj, **kwargs)
-        form.base_fields['server'].queryset = Server.objects.filter(role_backend=True)
+        if obj:
+            form.base_fields['server'].queryset = Server.objects.filter(role_backend=True).exclude(id__in=[m.server.id for m in Backend.objects.all().exclude(pk=obj.pk)])
+        else:
+            form.base_fields['server'].queryset = Server.objects.filter(role_backend=True).exclude(id__in=[m.server.id for m in Backend.objects.all()])
         return form
 
 

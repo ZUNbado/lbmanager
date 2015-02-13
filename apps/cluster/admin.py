@@ -20,7 +20,7 @@ class MemberAdmin(ClusterDefaultAdmin):
     def get_form(self, request, obj=None, **kwargs):
         form = super(MemberAdmin, self).get_form(request, obj, **kwargs)
         if obj:
-            form.base_fields['server'].queryset = Server.objects.filter(role_cluster=True).exclude(id__in=[m.server.id for m in Member.objects.all().exclude(id=obj.server.id)])
+            form.base_fields['server'].queryset = Server.objects.filter(role_cluster=True).exclude(id__in=[m.server.id for m in Member.objects.all().exclude(pk=obj.pk)])
         else:
             form.base_fields['server'].queryset = Server.objects.filter(role_cluster=True).exclude(id__in=[m.server.id for m in Member.objects.all()])
         return form
