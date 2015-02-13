@@ -2,6 +2,12 @@
 from __future__ import unicode_literals
 
 from django.db import models, migrations
+from django.core.management import call_command
+
+def loadfixture(apps, schema_editor):
+    for fix in [ 'default_group.json', 'groups.json' ]:
+        call_command('loaddata', fix)
+
 
 
 class Migration(migrations.Migration):
@@ -67,4 +73,5 @@ class Migration(migrations.Migration):
             field=models.ManyToManyField(to='config.Server', null=True, blank=True),
             preserve_default=True,
         ),
+        migrations.RunPython(loadfixture),
     ]

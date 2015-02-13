@@ -3,6 +3,9 @@ from datetime import datetime
 from django.db.models.signals import post_save, post_delete
 from django.contrib.admin.models import LogEntry
 from django.contrib.contenttypes.models import ContentType
+from django.contrib.sessions.models import Session
+from django.contrib.auth.models import User, Group as AuthGroup
+from admin_tools.dashboard.models import DashboardPreferences
 
 class ConfigDefaultAdmin(models.Model):
     enabled = models.BooleanField(default=True)
@@ -24,11 +27,8 @@ class Server(ConfigDefaultAdmin):
 
     def save(self, *args, **kwargs):
         super(Server, self).save(*args, **kwargs)
-        try:
-            group = Group.objects.get(pk=1)
-            group.db_update()
-        except:
-            pass
+        group = Group.objects.get(pk=1)
+        group.db_update()
 
     class Meta:
         verbose_name = 'Server'
@@ -40,7 +40,7 @@ class Group(ConfigDefaultAdmin):
     nginx_dir = models.CharField(max_length=200)
     nginx_dir.verbose_name = 'HTTPd conf dir'
     ldirectord_conf = models.CharField(max_length=200)
-    nginx_dir.verbose_name = 'ldirectord conf'
+    ldirectord_conf.verbose_name = 'ldirectord conf'
     graph_dir = models.CharField(max_length=200)
     graph_dir.verbose_name = 'Graph root dir'
     varnish_dir = models.CharField(max_length=200)
@@ -59,9 +59,12 @@ class Group(ConfigDefaultAdmin):
     def __unicode__(self):
         return u"%s" % (self.group.name)
 
-    def db_update(self, save = True):
+    def save(self, *args, **kwargs):
         self.version += 1
         self.last_update = datetime.now()
+        super(Group, self).save(*args, **kwargs)
+
+    def db_update(self, save = True):
         if save: self.save()
 
     def apply(self):
@@ -72,9 +75,9 @@ class Group(ConfigDefaultAdmin):
         verbose_name = 'Group'
 
 def db_update(sender, **kwargs):
-    if sender in [ Group, LogEntry, ContentType ]: save = False
-    else: save = True
+    save = False if sender in [ Group, LogEntry, ContentType, Session, User, AuthGroup, DashboardPreferences ] else True
     try:
+        if save: print sender
         group = Group.objects.get(pk=1)
         group.db_update( save = save )
     except:

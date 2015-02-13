@@ -1,0 +1,22 @@
+[
+{ 
+        "model": "config.group", 
+        "pk": 1,
+        "fields": {
+                "cluster_servers": [], 
+                "app_path": "/usr/local/src/lbmanager", 
+                "name": "default", 
+                "varnish_dir": "/etc/varnish", 
+                "enable_reload": true, 
+                "admin_port": 8000, 
+                "last_update": null, 
+                "nginx_dir": "/etc/nginx/", 
+                "ldirectord_conf": "/etc/ha.d/ldirectord.cf", 
+                "version": 0, 
+                "temp_dir": "/tmp/lb_manager", 
+                "graph_dir": "/var/lib/collectd/rrd/", 
+                "last_apply": null, 
+                "enable_transfer": true
+        } 
+}
+]
