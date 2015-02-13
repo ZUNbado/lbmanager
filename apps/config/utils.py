@@ -9,7 +9,10 @@ from django.core.urlresolvers import reverse
 def sync():
     root = os.path.abspath(os.path.dirname(__name__))
 
-    config = Group.objects.get(enabled=True)
+    try:
+        config = Group.objects.get(pk=1)
+    except:
+        return [{ 'name': 'localhost', 'msg' : 'No group found' }]
 
     dbfile = '/db.sqlite3'
 
@@ -35,7 +38,10 @@ def sync():
     return status
 
 def get_database_status_all():
-    group = Group.objects.get(pk=1)
+    try:
+        group = Group.objects.get(pk=1)
+    except:
+        return []
 
     status = []
     for server in Server.objects.filter(role_cluster=True):
