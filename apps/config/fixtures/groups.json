@@ -1,19 +1,5 @@
-[ 
-{
-        "model": "auth.group", 
-        "pk": 1,
-        "fields": 
-        {
-                "name": "LB Admin", 
-                "permissions": [28, 29, 30, 31, 32, 33, 37, 38, 39, 34, 35, 36, 7, 8, 9, 4, 5, 6, 40, 41, 42, 43, 44, 45, 46, 47, 48, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
-        } 
-}, 
-{
-        "model": "auth.group", 
-        "pk": 2,
-        "fields": {
-                "name": "LB Operator", 
-                "permissions": [16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27]
-        }
-} 
+[
+{"fields": {"name": "LB Admin", "permissions": [25, 26, 27, 28, 29, 30, 34, 35, 36, 31, 32, 33, 4, 5, 6, 1, 2, 3, 37, 38, 39, 40, 41, 42, 43, 44, 45, 13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]}, "model": "auth.group", "pk": 1}, 
+{"fields": {"name": "LB Operator", "permissions": [13, 14, 15, 16, 17, 18, 19, 20, 21, 22, 23, 24]}, "model": "auth.group", "pk": 2}, 
+{"fields": {"username": "admin", "first_name": "", "last_name": "", "is_active": true, "is_superuser": true, "is_staff": true, "last_login": "2015-02-13T17:02:27.392Z", "groups": [], "user_permissions": [], "password": "pbkdf2_sha256$12000$pQ1YzLaQWCsW$g1nIx6m3kBFtClqNua20vW5tp+DJ3ukyW8Ws3ulVlCM=", "email": "", "date_joined": "2015-02-13T17:02:17.937Z"}, "model": "auth.user", "pk": 1}
 ]

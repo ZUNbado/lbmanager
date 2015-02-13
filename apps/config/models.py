@@ -12,6 +12,9 @@ class ConfigDefaultAdmin(models.Model):
     def __unicode__(self):
         return u"%s" % self.name
 
+    class Meta:
+        abstract = True
+
 class Server(ConfigDefaultAdmin):
     name = models.CharField(max_length=200)
     address = models.IPAddressField()
