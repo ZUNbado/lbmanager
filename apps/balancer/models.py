@@ -13,7 +13,7 @@ class Backend(BalancerDefaults):
     name = models.CharField(max_length=200)
     server = models.ForeignKey(Server)
     port = models.IntegerField(default=80)
-    host_header = models.CharField(max_length=200,null=True,blank=True)
+#    host_header = models.CharField(max_length=200,null=True,blank=True)
     connect_timeout = models.IntegerField(null=True,blank=True)
     first_byte_timeout = models.IntegerField(null=True,blank=True)
     between_bytes_timeout = models.IntegerField(null=True,blank=True)
@@ -31,12 +31,12 @@ class Director(BalancerDefaults):
     TYPES = (
         ( 'Random', (
             ( 'random', 'Random'),
-            ( 'client', 'Client'),
-            ( 'hash', 'Hash' ),
+            ( 'client', 'By Client'),
+            ( 'hash', 'By Hash' ),
         ),
         ),
         ( 'round-robin', 'Round Robin' ),
-        ( 'dns', 'DNS' ),
+#        ( 'dns', 'DNS' ),
         ( 'fallback', 'Fallback' )
     )
     name = models.CharField(max_length=200)
