@@ -45,13 +45,13 @@ def apply(request):
 
                 if vhost.ssl_key !='' and vhost.ssl_cert != '':
                     # SSL Key
-                    sslkeyfile = os.path.join(tempdir, '%s-%s' % (str(vhost.id), 'ssl.key'))
+                    sslkeyfile = os.path.join(tempdir, '%s.%s' % (str(vhost.id), 'key'))
                     ctx = RequestContext(request, { 'ssl_key' : vhost.ssl_key })
                     content = loader.get_template_from_string('{{ ssl_key }}').render(ctx)
                     FilesManager.WriteFile(sslkeyfile, content)
 
                     # SSL Cert/CA
-                    sslcertfile = os.path.join(tempdir, '%s-%s' % (str(vhost.id), 'ssl.crt'))
+                    sslcertfile = os.path.join(tempdir, '%s.%s' % (str(vhost.id), 'crt'))
                     ctx = RequestContext(request, { 'ssl_cert' : vhost.ssl_cert, 'ssl_ca' : vhost.ssl_ca })
                     content = loader.get_template_from_string('{{ ssl_cert }}\n{{ ssl_ca }}').render(ctx)
                     FilesManager.WriteFile(sslcertfile, content)
@@ -93,9 +93,9 @@ def apply(request):
                             man.copy(tempdir+'/'+afile['file'],group.nginx_dir+'/auth/'+afile['file'])
 
                         for sfile in sfiles:
-                            for t in [ 'ssl.key', 'ssl.crt' ]:
-                                src = os.path.join(tempdir, '%s-%s' % (sfile['id'], t))
-                                dst = os.path.join(group.nginx_dir, 'ssl', '%s-%s' % (sfile['id'], t))
+                            for t in [ 'key', 'crt' ]:
+                                src = os.path.join(tempdir, '%s.%s' % (sfile['id'], t))
+                                dst = os.path.join(group.nginx_dir, 'ssl', '%s.%s' % (sfile['id'], t))
                                 man.copy(src, dst)
 
                         # Configure Secondary IP

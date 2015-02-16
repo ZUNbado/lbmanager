@@ -36,8 +36,8 @@ server {
 {%- endfor %}
 
     {%- if virtualhost.ssl_key != '' and virtualhost.ssl_cert != '' %}
-    ssl_certificate {{ nginx_dir }}ssl/{{ virtualhost.id }}-ssl.crt;
-    ssl_certificate_key {{ nginx_dir }}ssl/{{ virtualhost.id }}-ssl.key;
+    ssl_certificate {{ nginx_dir }}ssl/{{ virtualhost.id }}.crt;
+    ssl_certificate_key {{ nginx_dir }}ssl/{{ virtualhost.id }}.key;
     {%- endif %}
 
     {%- if domains|length > 0 %}
