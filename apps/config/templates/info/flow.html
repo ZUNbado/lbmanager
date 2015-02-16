@@ -1,0 +1,13 @@
+{% load i18n %}
+{% if not module.is_empty %}
+    <div id="module_{{ module.id }}" class="{{ module.render_css_classes }}">
+        {% if module.show_title and module.title %}<h2>{% if module.title_url %}<a href="{{ module.title_url }}">{% trans module.title %}</a>{% else %}{% trans module.title %}{% endif %}</h2>{% endif %}
+        <div class="dashboard-module-content">
+            {% spaceless %}
+            {% block module_content %}
+            <img align="center" width="100%" src="/static/config/images/flow.png" />
+            {% endblock %}
+            {% endspaceless %}
+        </div>
+    </div>
+{% endif %}

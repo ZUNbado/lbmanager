@@ -54,9 +54,9 @@ class CustomIndexDashboard(Dashboard):
         ))
 
         self.children.append(DashboardText(
-            title='Text module',
-            content='Content text',
-            pre_content='PRE Content text',
+            template = 'info/flow.html',
+            title='HTTP Flow',
+            content='',
             ))
 
         self.children.append(DashboardText(
