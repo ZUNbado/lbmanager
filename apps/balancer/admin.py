@@ -21,7 +21,7 @@ class BackendAdmin(BalancerDefaultAdmin):
         }),
         ('Advanced options', {
             'classes': ('collapse',),
-            'fields': ('host_header', 'connect_timeout', 'first_byte_timeout', 'between_bytes_timeout', 'max_connections')
+            'fields': ('connect_timeout', 'first_byte_timeout', 'between_bytes_timeout', 'max_connections')
         }),
         ('Probe options', {
             'classes': ('collapse',),
