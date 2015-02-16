@@ -45,15 +45,18 @@ def get_database_status_all():
 
     status = []
     for server in Server.objects.filter(role_cluster=True):
-        stat = requests.get('http://%s:8000/admin/database/custom/database_status' % server.address ).json()
-        stat['backend'] = server.name
-        stat['current_version'] = group.version
-        stat['current_last_update'] = group.last_update.strftime('%s') if group.last_update else None
-        stat['current_last_apply'] = group.last_apply.strftime('%s') if group.last_apply else None
-        stat['current_last_update_human'] = group.last_update
-        stat['current_last_apply_human'] = group.last_apply
+        try:
+            stat = requests.get('http://%s:8000/admin/database/custom/database_status' % server.address ).json()
+            stat['backend'] = server.name
+            stat['current_version'] = group.version
+            stat['current_last_update'] = group.last_update.strftime('%s') if group.last_update else None
+            stat['current_last_apply'] = group.last_apply.strftime('%s') if group.last_apply else None
+            stat['current_last_update_human'] = group.last_update
+            stat['current_last_apply_human'] = group.last_apply
 
-        status.append(stat)
+            status.append(stat)
+        except:
+            pass
 
     return status
 
