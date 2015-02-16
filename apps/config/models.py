@@ -80,7 +80,6 @@ class Group(ConfigDefaultAdmin):
 def db_update(sender, **kwargs):
     save = False if sender in [ Group, LogEntry, ContentType, Session, User, AuthGroup, DashboardPreferences ] else True
     try:
-        if save: print sender
         group = Group.objects.get(pk=1)
         group.db_update( save = save )
     except:
