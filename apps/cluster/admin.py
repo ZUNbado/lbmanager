@@ -14,8 +14,8 @@ class ClusterDefaultAdmin(admin.ModelAdmin):
     actions = [set_enable,set_disable]
 
 class MemberAdmin(ClusterDefaultAdmin):
-    fields = ('server', 'port', 'enabled')
-    list_display = ('server', 'port', 'enabled')
+    fields = ('server', 'port', 'ssl_port', 'enabled')
+    list_display = ('server', 'port', 'ssl_port', 'enabled')
 
     def get_form(self, request, obj=None, **kwargs):
         form = super(MemberAdmin, self).get_form(request, obj, **kwargs)

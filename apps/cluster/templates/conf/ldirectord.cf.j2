@@ -30,7 +30,7 @@ virtual={{ cluster.address }}:{{ cluster.port }}
 virtual={{ cluster.address }}:{{ cluster.ssl_port }}
 {%- for member in cluster.backends.all() %}
 {%- if member.enabled == True %} 
-    real={{ member.server.address }}:{{ cluster.ssl_port }} {{ cluster.mode }}
+    real={{ member.server.address }}:{{ member.ssl_port }} {{ cluster.mode }}
 {%- endif %}
 {%- endfor %}
 {%- if cluster.fallback_ip != '' %} 
