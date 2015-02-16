@@ -67,20 +67,26 @@ def apply(request):
                     if group.enable_transfer is  True:
                         man.command('mkdir -p '+group.nginx_dir+'/lbmanager/')
                         man.command('rm -f '+group.nginx_dir+'/lbmanager/*')
-                        print os.path.join( tempdir, 'lbmanager_include.conf' )
-                        print os.path.join( group.nginx_dir, 'conf.d' )
                         man.copy(tempdir+'/lbmanager_include.conf', group.nginx_dir+'conf.d/lbmanager_include.conf')
                         for vfile in vfiles:
-                            print os.path.join(group.nginx_dir, 'lbmanager', vfile['file'])
                             man.copy(tempdir+'/'+vfile['file'],group.nginx_dir+'/lbmanager/'+vfile['file'])
                         man.command('mkdir -p '+group.nginx_dir+'/auth/')
                         for afile in afiles:
                             man.copy(tempdir+'/'+afile['file'],group.nginx_dir+'/auth/'+afile['file'])
+
+                        # Configure Secondary IP
+                        for cluster in clusters:
+                            man.checkAndConfigIP(cluster.address)
+
                         msg = "Files transferred"
                     else:
                         msg = "Transfer files disabled"
 
                     if group.enable_reload is True:
+                        # Auto UP Secondary IP
+                        for cluster in clusters:
+                            man.checkAndAddIP(cluster.address)
+
                         man.command('service nginx reload')
                         msg = msg + "Service restarted"
                     else:
