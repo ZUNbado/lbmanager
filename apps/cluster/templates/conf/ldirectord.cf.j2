@@ -26,4 +26,23 @@ virtual={{ cluster.address }}:{{ cluster.port }}
 {%- if cluster.netmask != None %}
     netmask={{ cluster.netmask }}
 {%- endif %}
+{%- if cluster.ssl == True %}
+virtual={{ cluster.address }}:{{ cluster.ssl_port }}
+{%- for member in cluster.backends.all() %}
+{%- if member.enabled == True %} 
+    real={{ member.server.address }}:{{ cluster.ssl_port }} {{ cluster.mode }}
+{%- endif %}
+{%- endfor %}
+{%- if cluster.fallback_ip != '' %} 
+    fallback={{ cluster.fallback_ip }}:{{ cluster.fallback_port }}
+{%- endif %}
+    scheduler={{ cluster.scheduler }}
+    protocol={{ cluster.protocol }}
+{%- if cluster.persistent != None %} 
+    persistent={{ cluster.persistent }}
+{%- endif %}
+{%- if cluster.netmask != None %}
+    netmask={{ cluster.netmask }}
+{%- endif %}
+{%- endif %}
 {% endfor %}

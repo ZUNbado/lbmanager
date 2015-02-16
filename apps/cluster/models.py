@@ -10,6 +10,7 @@ class ClusterDefaults(models.Model):
 class Member(ClusterDefaults):
     server = models.ForeignKey(Server)
     port = models.IntegerField(default=80)
+    ssl_port = models.IntegerField(blank=True,null=True)
 
     def __unicode__(self):
         return u"%s / %s:%d" % (self.server.name, self.server.address, self.port)
