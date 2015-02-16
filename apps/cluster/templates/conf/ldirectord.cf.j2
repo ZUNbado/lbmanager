@@ -20,16 +20,16 @@ virtual={{ cluster.address }}:{{ cluster.port }}
 {%- endif %}
     scheduler={{ cluster.scheduler }}
     protocol={{ cluster.protocol }}
-{%- if cluster.persistent != None %}  
+{%- if cluster.persistent != '' and cluster.persistent != None %}  
     persistent={{ cluster.persistent }}
 {%- endif %}
-{%- if cluster.netmask != None %}
+{%- if cluster.netmask != '' and cluster.netmask != None %}
     netmask={{ cluster.netmask }}
 {%- endif %}
 {%- if cluster.ssl == True %}
 virtual={{ cluster.address }}:{{ cluster.ssl_port }}
 {%- for member in cluster.backends.all() %}
-{%- if member.enabled == True %} 
+{%- if member.enabled == True and member.ssl_port != None and member.ssl_port != '' %} 
     real={{ member.server.address }}:{{ member.ssl_port }} {{ cluster.mode }}
 {%- endif %}
 {%- endfor %}
@@ -38,10 +38,10 @@ virtual={{ cluster.address }}:{{ cluster.ssl_port }}
 {%- endif %}
     scheduler={{ cluster.scheduler }}
     protocol={{ cluster.protocol }}
-{%- if cluster.persistent != None %} 
+{%- if cluster.persistent != '' and cluster.persistent != None %} 
     persistent={{ cluster.persistent }}
 {%- endif %}
-{%- if cluster.netmask != None %}
+{%- if cluster.netmask != '' and cluster.netmask != None %}
     netmask={{ cluster.netmask }}
 {%- endif %}
 {%- endif %}
