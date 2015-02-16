@@ -46,7 +46,7 @@ def get_database_status_all():
     status = []
     for server in Server.objects.filter(role_cluster=True):
         try:
-            stat = requests.get('http://%s:8000/admin/database/custom/database_status' % server.address ).json()
+            stat = requests.get('http://%s:8000/admin/database/custom/database_status' % server.address, timeout=2 ).json()
             stat['backend'] = server.name
             stat['current_version'] = group.version
             stat['current_last_update'] = group.last_update.strftime('%s') if group.last_update else None
