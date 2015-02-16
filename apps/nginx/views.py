@@ -20,6 +20,13 @@ def apply(request):
     for group in Group.objects.filter(enabled=True):
         tempdir=group.temp_dir+'/'+str(group.id)+'/nginx'
         FilesManager.DirExists(tempdir)
+
+        # Make include file config
+        tpl = loader.get_template('conf/include.conf.j2')
+        ctx = RequestContext(request, { 'include_dir' : group.nginx_dir } )
+        content = tpl.render(ctx)
+        FilesManager.WriteFile(tempdir+'/lbmanager_include.conf', content)
+
         vfiles = []
         afiles = []
         for vhost in NginxVirtualHost.objects.filter(enabled=True):
@@ -55,11 +62,17 @@ def apply(request):
             member=final_members[key]
             msg = ''
             if group.enable_transfer is True or group.enable_reload is True:
-                man=ConfManager(member.server.address, member.server.ssh_user, member.server.ssh_password, member.server.ssh_port )
+                man=ConfManager(member.address, member.ssh_user, member.ssh_password, member.ssh_port )
                 if man.connected:
                     if group.enable_transfer is  True:
+                        man.command('mkdir -p '+group.nginx_dir+'/lbmanager/')
+                        man.command('rm -f '+group.nginx_dir+'/lbmanager/*')
+                        print os.path.join( tempdir, 'lbmanager_include.conf' )
+                        print os.path.join( group.nginx_dir, 'conf.d' )
+                        man.copy(tempdir+'/lbmanager_include.conf', group.nginx_dir+'conf.d/lbmanager_include.conf')
                         for vfile in vfiles:
-                            man.copy(tempdir+'/'+vfile['file'],group.nginx_dir+'/conf.d/'+vfile['file'])
+                            print os.path.join(group.nginx_dir, 'lbmanager', vfile['file'])
+                            man.copy(tempdir+'/'+vfile['file'],group.nginx_dir+'/lbmanager/'+vfile['file'])
                         man.command('mkdir -p '+group.nginx_dir+'/auth/')
                         for afile in afiles:
                             man.copy(tempdir+'/'+afile['file'],group.nginx_dir+'/auth/'+afile['file'])
