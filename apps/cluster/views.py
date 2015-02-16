@@ -44,6 +44,7 @@ def apply(request):
                 if man.connected:
                     if group.enable_transfer is True:
                         man.copy(tempdir+'/ldirectord.cf','/etc/ha.d/ldirectord.cf')
+                        # Faltaria configurar corosync!
                         msg = "Files transferred"
                     else:
                         msg = "Transfer files disabled"
