@@ -72,7 +72,8 @@ def apply(request):
             members=Member.objects.filter(cluster=cluster)
             for member in members:
                 if member.server.name not in final_members:
-                    final_members[member.server.name]=member.server
+                    if member.server.role_frontend == True:
+                        final_members[member.server.name]=member.server
 
         for key in final_members.keys():
             member=final_members[key]
