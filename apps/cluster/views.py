@@ -64,15 +64,15 @@ def apply(request):
                     if group.enable_reload is True:
                         man.command('service ldirectord restart')
                         # sleeps per evitar problemes de quorum al aplicar els canvis
-                        man.command('/usr/sbin/crm resource stop LVS-%d' % group.id)
-                        time.sleep(1)
-                        man.command('/usr/sbin/crm configure erase')
-                        time.sleep(1)
-                        man.command('/usr/sbin/crm configure load update /tmp/crm.conf.lbmanager')
-                        time.sleep(1)
-                        man.command('/usr/sbin/crm resource start LVS-%d' % group.id)
-                        time.sleep(1)
-                        man.command('service corosync force-reload')
+                        #man.command('/usr/sbin/crm resource stop LVS-%d' % group.id)
+                        #time.sleep(1)
+                        #man.command('/usr/sbin/crm configure erase')
+                        #time.sleep(1)
+                        #man.command('/usr/sbin/crm configure load update /tmp/crm.conf.lbmanager')
+                        #time.sleep(1)
+                        #man.command('/usr/sbin/crm resource start LVS-%d' % group.id)
+                        #time.sleep(1)
+                        #man.command('service corosync force-reload')
                         msg = msg + "Service restarted"
                     else:
                         msg = msg + "Reload services disabled"

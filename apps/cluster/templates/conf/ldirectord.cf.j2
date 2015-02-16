@@ -20,4 +20,10 @@ virtual={{ cluster.address }}:{{ cluster.port }}
 {%- endif %}
     scheduler={{ cluster.scheduler }}
     protocol={{ cluster.protocol }}
+{%- if cluster.persistent != None %}  
+    persistent={{ cluster.persistent }}
+{%- endif %}
+{%- if cluster.netmask != None %}
+    netmask={{ cluster.netmask }}
+{%- endif %}
 {% endfor %}

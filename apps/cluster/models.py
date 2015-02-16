@@ -59,7 +59,7 @@ class Cluster(ClusterDefaults):
         choices=SCHEDULER_MODES,
         default='wrr',
     )
-    persistent = models.IntegerField(default=300)
+    persistent = models.IntegerField(blank=True,null=True)
     netmask = models.IPAddressField(blank=True,null=True)
     protocol = models.CharField(
         max_length=3,
