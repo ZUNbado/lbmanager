@@ -6,6 +6,9 @@ from ..cluster.models import Member, Cluster
 from ..config.models import Group, Server
 from libs.confmanager import ConfManager, FilesManager
 
+import os
+import socket, struct
+
 def apply(request):
     if not request.user.is_authenticated():
         return redirect('/admin/login/?next=%s' % request.path)
@@ -23,18 +26,27 @@ def apply(request):
         content=tpl.render(ctx)
         FilesManager.WriteFile(tempdir+'/ldirectord.cf', content)
 
+        from pprint import pprint
         final_members = {}
-        servers=group.cluster_servers
-        for server in servers.all(): 
-            final_members[server.name]=server
-        if len(final_members) == 0:
-            # Get all servers from a group
-            clusters=Cluster.objects.all()
-            for cluster in clusters:
-                members=Member.objects.filter(cluster=cluster)
-                for member in members:
-                    if member.server.name not in final_members:
-                        final_members[member.server.name]=member.server
+        bindnetaddr = None
+        for server in Server.objects.filter(role_cluster=True,enabled=True): 
+            member = Member.object.get(server=server)
+            pprint(member)
+            if member.enabled: final_members[server.name]=server
+            bindnetaddr = server.address
+
+        bindnetaddr = bindnetaddr.rsplit('.', 1)[0]
+        pprint(final_members)
+        tpl = loader.get_template('conf/corosync.conf.j2')
+        ctx = RequestContext(request, { 'members': final_members, 'bindnetaddr' : bindnetaddr })
+        corosync_content = tpl.render(ctx)
+        FilesManager.WriteFile(os.path.join(tempdir, 'corosync.conf'), corosync_content)
+
+        lvs_ip = ' '.join('lvs_ip_%s' % s.id for s in clusters)
+        tpl = loader.get_template('conf/crm.j2')
+        ctx = RequestContext(request, { 'clusters' : clusters, 'group_id' : group.id, 'lvs_ip' : lvs_ip })
+        crm_content = tpl.render(ctx)
+        FilesManager.WriteFile(os.path.join(tempdir, 'crm'), crm_content)
 
         for key in final_members.keys():
             member=final_members[key]
@@ -43,14 +55,20 @@ def apply(request):
                 msg = ''
                 if man.connected:
                     if group.enable_transfer is True:
+                        # ldirectord conf
                         man.copy(tempdir+'/ldirectord.cf','/etc/ha.d/ldirectord.cf')
-                        # Faltaria configurar corosync!
+                        # corosync daemon conf
+                        man.copy(os.path.join(tempdir, 'corosync.conf'), '/etc/corosync/corosync.conf')
+                        # corosync resources
+                        man.copy(os.path.join(tempdir, 'crm'), '/tmp/crm.conf.lbmanager')
                         msg = "Files transferred"
                     else:
                         msg = "Transfer files disabled"
 
                     if group.enable_reload is True:
                         man.command('service ldirectord restart')
+                        man.command('service corosync force-reload')
+                        man.command('crm configure load update /tmp/crm.conf.lbmanager')
                         msg = msg + "Service restarted"
                     else:
                         msg = msg + "Reload services disabled"

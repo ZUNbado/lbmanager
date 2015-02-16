@@ -1,0 +1,51 @@
+totem {
+        version: 2
+        token: 3000
+        token_retransmits_before_loss_const: 10
+        join: 60
+        consensus: 3600
+        vsftype: none
+        max_messages: 20
+        clear_node_high_bit: yes
+        secauth: off
+        threads: 0
+        rrp_mode: none
+        interface {
+{%- for name, member in members.items() %}
+                member {
+                        memberaddr: {{ member.address }}
+                }
+{%- endfor %}
+                ringnumber: 0
+                bindnetaddr: {{ bindnetaddr }}.0
+                mcastport: 5405
+        }
+        transport: udpu
+}
+
+amf {
+        mode: disabled
+}
+service {
+        # Load the Pacemaker Cluster Resource Manager
+        ver:       0
+        name:      pacemaker
+}
+aisexec {
+        user:   root
+        group:  root
+}
+logging {
+        fileline: off
+        to_stderr: yes
+        to_logfile: no
+        to_syslog: yes
+        syslog_facility: daemon
+        debug: off
+        timestamp: on
+        logger_subsys {
+                subsys: AMF
+                debug: off
+                tags: enter|leave|trace1|trace2|trace3|trace4|trace6
+        }
+}

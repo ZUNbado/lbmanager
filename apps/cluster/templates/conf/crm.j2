@@ -1,0 +1,13 @@
+primitive ldirectord ocf:heartbeat:ldirectord \
+    op stop interval="0" timeout="5s" \
+    op start interval="0" timeout="5s" \
+    op monitor interval="10s" timeout="3s"
+{%- for cluster in clusters %}
+primitive lvs_ip_{{ cluster.id }} ocf:heartbeat:IPaddr2 \
+    params cidr_netmask="32" lvs_support="true" ip="{{ cluster.address }}" nic="eth0" iflabel="{{ cluster.id }}" \
+    op stop interval="0" timeout="5s" \
+    op start interval="0" timeout="5s" \
+    op monitor interval="10s" timeout="3s"
+{%- endfor %}
+group LVS-{{ group_id }} ldirectord {{ lvs_ip }}
+
