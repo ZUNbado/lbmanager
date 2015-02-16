@@ -6,8 +6,7 @@ from ..cluster.models import Member, Cluster
 from ..config.models import Group, Server
 from libs.confmanager import ConfManager, FilesManager
 
-import os
-import socket, struct
+import os, socket, struct, time
 
 def apply(request):
     if not request.user.is_authenticated():
@@ -26,17 +25,14 @@ def apply(request):
         content=tpl.render(ctx)
         FilesManager.WriteFile(tempdir+'/ldirectord.cf', content)
 
-        from pprint import pprint
         final_members = {}
         bindnetaddr = None
         for server in Server.objects.filter(role_cluster=True,enabled=True): 
-            member = Member.object.get(server=server)
-            pprint(member)
+            member = Member.objects.get(server=server)
             if member.enabled: final_members[server.name]=server
             bindnetaddr = server.address
 
         bindnetaddr = bindnetaddr.rsplit('.', 1)[0]
-        pprint(final_members)
         tpl = loader.get_template('conf/corosync.conf.j2')
         ctx = RequestContext(request, { 'members': final_members, 'bindnetaddr' : bindnetaddr })
         corosync_content = tpl.render(ctx)
@@ -67,8 +63,16 @@ def apply(request):
 
                     if group.enable_reload is True:
                         man.command('service ldirectord restart')
+                        # sleeps per evitar problemes de quorum al aplicar els canvis
+                        man.command('/usr/sbin/crm resource stop LVS-%d' % group.id)
+                        time.sleep(1)
+                        man.command('/usr/sbin/crm configure erase')
+                        time.sleep(1)
+                        man.command('/usr/sbin/crm configure load update /tmp/crm.conf.lbmanager')
+                        time.sleep(1)
+                        man.command('/usr/sbin/crm resource start LVS-%d' % group.id)
+                        time.sleep(1)
                         man.command('service corosync force-reload')
-                        man.command('crm configure load update /tmp/crm.conf.lbmanager')
                         msg = msg + "Service restarted"
                     else:
                         msg = msg + "Reload services disabled"

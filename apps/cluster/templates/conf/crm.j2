@@ -11,3 +11,6 @@ primitive lvs_ip_{{ cluster.id }} ocf:heartbeat:IPaddr2 \
 {%- endfor %}
 group LVS-{{ group_id }} ldirectord {{ lvs_ip }}
 
+property expected-quorum-votes="2" \
+    stonith-enabled="false"
+
