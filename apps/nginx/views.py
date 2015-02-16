@@ -29,6 +29,7 @@ def apply(request):
 
         vfiles = []
         afiles = []
+        sfiles = []
         for vhost in NginxVirtualHost.objects.filter(enabled=True):
             if vhost.cluster.all().count() > 0:
                 domains = Domain.objects.filter(enabled=True,virtual_host=vhost)
@@ -37,10 +38,25 @@ def apply(request):
                 urlRedirs = UrlRedir.objects.filter(enabled=True,virtual_host=vhost)
                 locations = Location.objects.filter(nginx_virtualhost=vhost,enabled=True)
                 tpl = loader.get_template('conf/vhost.conf.j2')
-                ctx = RequestContext(request, { 'virtualhost': vhost, 'domains': domains, 'aliases': aliases, 'hostRedirs': hostRedirs, 'urlRedirs': urlRedirs, 'locations' : locations })
+                ctx = RequestContext(request, { 'virtualhost': vhost, 'domains': domains, 'aliases': aliases, 'hostRedirs': hostRedirs, 'urlRedirs': urlRedirs, 'locations' : locations, 'nginx_dir' : group.nginx_dir })
                 content=tpl.render(ctx)
                 FilesManager.WriteFile(tempdir+'/'+str(vhost.id)+'.conf', content)
                 vfiles.append({ 'file': str(vhost.id)+'.conf', 'content': content })
+
+                if vhost.ssl_key !='' and vhost.ssl_cert != '':
+                    # SSL Key
+                    sslkeyfile = os.path.join(tempdir, '%s-%s' % (str(vhost.id), 'ssl.key'))
+                    ctx = RequestContext(request, { 'ssl_key' : vhost.ssl_key })
+                    content = loader.get_template_from_string('{{ ssl_key }}').render(ctx)
+                    FilesManager.WriteFile(sslkeyfile, content)
+
+                    # SSL Cert/CA
+                    sslcertfile = os.path.join(tempdir, '%s-%s' % (str(vhost.id), 'ssl.crt'))
+                    ctx = RequestContext(request, { 'ssl_cert' : vhost.ssl_cert, 'ssl_ca' : vhost.ssl_ca })
+                    content = loader.get_template_from_string('{{ ssl_cert }}\n{{ ssl_ca }}').render(ctx)
+                    FilesManager.WriteFile(sslcertfile, content)
+
+                    sfiles.append({ 'keyfile' : sslkeyfile, 'certfile' : sslcertfile, 'id' : vhost.id })
 
                 for location in Location.objects.filter(nginx_virtualhost=vhost,enabled=True,auth_basic_enabled=True):
                     tpl = loader.get_template('conf/passwd.j2')
@@ -67,12 +83,20 @@ def apply(request):
                     if group.enable_transfer is  True:
                         man.command('mkdir -p '+group.nginx_dir+'/lbmanager/')
                         man.command('rm -f '+group.nginx_dir+'/lbmanager/*')
+                        man.command('mkdir -p '+group.nginx_dir+'/ssl/')
+                        man.command('rm -f '+group.nginx_dir+'/ssl/*')
                         man.copy(tempdir+'/lbmanager_include.conf', group.nginx_dir+'conf.d/lbmanager_include.conf')
                         for vfile in vfiles:
                             man.copy(tempdir+'/'+vfile['file'],group.nginx_dir+'/lbmanager/'+vfile['file'])
                         man.command('mkdir -p '+group.nginx_dir+'/auth/')
                         for afile in afiles:
                             man.copy(tempdir+'/'+afile['file'],group.nginx_dir+'/auth/'+afile['file'])
+
+                        for sfile in sfiles:
+                            for t in [ 'ssl.key', 'ssl.crt' ]:
+                                src = os.path.join(tempdir, '%s-%s' % (sfile['id'], t))
+                                dst = os.path.join(group.nginx_dir, 'ssl', '%s-%s' % (sfile['id'], t))
+                                man.copy(src, dst)
 
                         # Configure Secondary IP
                         for cluster in clusters:
