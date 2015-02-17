@@ -48,7 +48,7 @@ class ConfManager():
         return socket.inet_ntoa(struct.pack('!L', num))
         
     def checkAndAddIP(self,ips):
-        self.command('ip addr show lo|grep "inet "|grep -v "scope host lo"')
+        self.command('ip addr show |grep "inet "|grep -v "scope host lo"')
         exists = []
         for line in self.stdout.readlines():
             lines = line.strip().split(' ')

@@ -35,10 +35,12 @@ backend {{ backend.name }} {
 
 {%- for director in directors %}
 director {{ director.name }} {{ director.dirtype }} {
-   {%- for back in director.backends.all() %}
+   {%- for back in director.backends.filter(enabled=True) %}
+   {%- if back.server.enabled == True %}
    {
       .backend = {{ back.name }};
    }
+   {%- endif %}
    {%- endfor %}
 }
 {%- endfor %}

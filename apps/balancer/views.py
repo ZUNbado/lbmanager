@@ -21,8 +21,10 @@ def apply(request):
         directors = Director.objects.filter(enabled=True)
         backends = []
         for director in directors:
-            for backend in director.backends.all():
-                if backend not in backends: backends.append(backend)
+            for backend in director.backends.filter(enabled=True):
+                if backend not in backends: 
+                    if backend.server.enabled:
+                        backends.append(backend)
 
 
         tpl = loader.get_template('conf/backends.vcl.j2')
@@ -35,10 +37,11 @@ def apply(request):
         clusters=Cluster.objects.all()
         final_members = {}
         for cluster in clusters:
-            members=Member.objects.filter(cluster=cluster)
+            members=Member.objects.filter(cluster=cluster,enabled=True)
             for member in members:
                 if member.server.name not in final_members:
-                    final_members[member.server.name]=member.server
+                    if member.server.enabled and member.server.role_frontend:
+                        final_members[member.server.name]=member.server
 
         for key in final_members.keys():
             member=final_members[key]
