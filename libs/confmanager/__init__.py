@@ -49,17 +49,18 @@ class ConfManager():
         
     def checkAndAddIP(self,ips):
         self.command('ip addr show lo|grep "inet "|grep -v "scope host lo"')
+        exists = []
         for line in self.stdout.readlines():
             lines = line.strip().split(' ')
             if lines[1][:-3] not in ips:
                 self.command('ip addr del %s dev lo' % lines[1])
             else:
-                ips.pop( ips.index(lines[1][:-3]) )
+                exists.append(lines[1][:-3])
 
         for ip in ips:
-            command = 'ip addr add %s/32 dev lo label lo:%s' % (ip, self.IPToNum(ip))
-            print command
-            self.command( command )
+            if ip not in exists:
+                command = 'ip addr add %s/32 dev lo label lo:%s' % (ip, self.IPToNum(ip))
+                self.command( command )
 
     def checkAndConfigIP(self,ips):
         sftp=self.ssh.open_sftp()
@@ -72,7 +73,7 @@ class ConfManager():
                 for ip in ips:
                     upline = 'ip addr add %s/32 dev $IFACE label $IFACE:%s' % ( ip, self.IPToNum(ip) )
                     up.append(upline)
-                    downline = 'ip addr del %s/32 dev lo' % ip
+                    downline = 'ip addr del %s/32 dev $IFACE' % ip
                     down.append(downline)
 
                 adapter.setDown(down)

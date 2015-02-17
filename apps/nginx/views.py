@@ -68,9 +68,9 @@ def apply(request):
         # Get all servers from a group
         clusters=Cluster.objects.filter(enabled=True)
         final_members = {}
-        ips = []
+        cluster_ips = []
         for cluster in clusters:
-            ips.append(cluster.address)
+            cluster_ips.append(cluster.address)
             members=Member.objects.filter(cluster=cluster)
             for member in members:
                 if member.server.name not in final_members:
@@ -102,7 +102,7 @@ def apply(request):
                                 man.copy(src, dst)
 
                         # Configure Secondary IP
-                        man.checkAndConfigIP(ips)
+                        man.checkAndConfigIP(cluster_ips)
 
                         msg = "Files transferred"
                     else:
@@ -110,7 +110,7 @@ def apply(request):
 
                     if group.enable_reload is True:
                         # Auto UP Secondary IP
-                        man.checkAndAddIP(ips)
+                        man.checkAndAddIP(cluster_ips)
 
                         man.command('service nginx reload')
                         msg = msg + "Service restarted"
