@@ -44,7 +44,7 @@ def apply(request):
             member=final_members[key]
             msg = ''
             if group.enable_transfer is True or group.enable_reload is True:
-                man=ConfManager(member.server.address, member.server.ssh_user, member.server.ssh_password, member.server.ssh_port )
+                man=ConfManager(member.address, member.ssh_user, member.ssh_password, member.ssh_port )
                 if man.connected:
                     if group.enable_transfer is  True:
                         man.copy(tempdir+'/backend.vcl',group.varnish_dir+'/backend.vcl')

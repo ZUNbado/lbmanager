@@ -1,6 +1,7 @@
 import paramiko
 import os
 import socket, struct
+from libs.debinterface.interfaces import interfaces
 
 class ConfManager():
     def __init__(self, host, user, passwd, port):
@@ -56,23 +57,41 @@ class ConfManager():
             #command="ifconfig lo:%s %s netmask 255.255.255.255" % (self.IPToNum(ip), ip)
             self.command(command)
 
-    def checkAndConfigIP(self,ip,lodef='iface lo inet loopback',netfile='/etc/network/interfaces'):
-        conf = "up ip addr add %s/32 dev lo label lo:%s" % (ip, self.IPToNum(ip))
-        match = False
-        addafter = None
+    def checkAndConfigIP(self,ips,lodef='iface lo inet loopback',netfile='/etc/network/interfaces'):
         sftp=self.ssh.open_sftp()
-        with sftp.file(netfile, 'r') as file:
-            data=file.readlines()
-            for lineno, cur_line in enumerate(data):
-                if cur_line.strip('\t\r\n ') == lodef:
-                    addafter = lineno
-                if cur_line.strip('\t\r\n ') == conf:
-                    match = True
+        adapters = interfaces(sftp)
+        new_adapters = []
+        for adapter in adapters.adapters:
+            if adapter.export()['name'] == 'lo':
+                updown = []
+                for ip in ips:
+                    updownline = 'ip addr add %s/32 dev $IFACE label $IFACE:%s' % ( ip, self.IPToNum(ip) )
+                    updown.append(updownline)
+                adapter.setDown(updown)
+                adapter.setUp(updown)
 
-        if match == False:
-            data.insert(addafter + 1, str("\t"+conf+"\n"))
-            with sftp.file(netfile, 'w') as write:
-                write.writelines(data)
+            new_adapters.append(adapter)
+
+        adapters.adapters = new_adapters
+        adapters.writeInterfaces()
+
+#    def checkAndConfigIP(self,ip,lodef='iface lo inet loopback',netfile='/etc/network/interfaces'):
+#        conf = "up ip addr add %s/32 dev lo label lo:%s" % (ip, self.IPToNum(ip))
+#        match = False
+#        addafter = None
+#        sftp=self.ssh.open_sftp()
+#        with sftp.file(netfile, 'r') as file:
+#            data=file.readlines()
+#            for lineno, cur_line in enumerate(data):
+#                if cur_line.strip('\t\r\n ') == lodef:
+#                    addafter = lineno
+#                if cur_line.strip('\t\r\n ') == conf:
+#                    match = True
+#
+#        if match == False:
+#            data.insert(addafter + 1, str("\t"+conf+"\n"))
+#            with sftp.file(netfile, 'w') as write:
+#                write.writelines(data)
 
 class FilesManager():
     @staticmethod

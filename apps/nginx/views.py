@@ -66,7 +66,7 @@ def apply(request):
                     afiles.append({ 'file': str(vhost.id)+"."+str(location.id)+'.passwd', 'content': a_content })
 
         # Get all servers from a group
-        clusters=Cluster.objects.all()
+        clusters=Cluster.objects.filter(enabled=True)
         final_members = {}
         for cluster in clusters:
             members=Member.objects.filter(cluster=cluster)
@@ -100,8 +100,11 @@ def apply(request):
                                 man.copy(src, dst)
 
                         # Configure Secondary IP
+                        ips = []
                         for cluster in clusters:
-                            man.checkAndConfigIP(cluster.address)
+                            ips.append(cluster.address)
+
+                        man.checkAndConfigIP(ips)
 
                         msg = "Files transferred"
                     else:
