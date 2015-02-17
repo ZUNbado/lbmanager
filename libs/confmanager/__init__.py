@@ -47,51 +47,41 @@ class ConfManager():
     def NumToIP(self,num):
         return socket.inet_ntoa(struct.pack('!L', num))
         
-    def checkAndAddIP(self,ip):
-        self.command("ip addr show lo |grep %s" % (ip))
-        count=0
-        for line in self.stdout.readlines(): count=count+1
+    def checkAndAddIP(self,ips):
+        self.command('ip addr show lo|grep "inet "|grep -v "scope host lo"')
+        for line in self.stdout.readlines():
+            lines = line.strip().split(' ')
+            if lines[1][:-3] not in ips:
+                self.command('ip addr del %s dev lo' % lines[1])
+            else:
+                ips.pop( ips.index(lines[1][:-3]) )
 
-        if count == 0:
-            command="ip addr add %s/32 dev lo label lo:%s" % (ip, self.IPToNum(ip))
-            #command="ifconfig lo:%s %s netmask 255.255.255.255" % (self.IPToNum(ip), ip)
-            self.command(command)
+        for ip in ips:
+            command = 'ip addr add %s/32 dev lo label lo:%s' % (ip, self.IPToNum(ip))
+            print command
+            self.command( command )
 
-    def checkAndConfigIP(self,ips,lodef='iface lo inet loopback',netfile='/etc/network/interfaces'):
+    def checkAndConfigIP(self,ips):
         sftp=self.ssh.open_sftp()
         adapters = interfaces(sftp)
         new_adapters = []
         for adapter in adapters.adapters:
             if adapter.export()['name'] == 'lo':
-                updown = []
+                up = []
+                down = []
                 for ip in ips:
-                    updownline = 'ip addr add %s/32 dev $IFACE label $IFACE:%s' % ( ip, self.IPToNum(ip) )
-                    updown.append(updownline)
-                adapter.setDown(updown)
-                adapter.setUp(updown)
+                    upline = 'ip addr add %s/32 dev $IFACE label $IFACE:%s' % ( ip, self.IPToNum(ip) )
+                    up.append(upline)
+                    downline = 'ip addr del %s/32 dev lo' % ip
+                    down.append(downline)
+
+                adapter.setDown(down)
+                adapter.setUp(up)
 
             new_adapters.append(adapter)
 
         adapters.adapters = new_adapters
         adapters.writeInterfaces()
-
-#    def checkAndConfigIP(self,ip,lodef='iface lo inet loopback',netfile='/etc/network/interfaces'):
-#        conf = "up ip addr add %s/32 dev lo label lo:%s" % (ip, self.IPToNum(ip))
-#        match = False
-#        addafter = None
-#        sftp=self.ssh.open_sftp()
-#        with sftp.file(netfile, 'r') as file:
-#            data=file.readlines()
-#            for lineno, cur_line in enumerate(data):
-#                if cur_line.strip('\t\r\n ') == lodef:
-#                    addafter = lineno
-#                if cur_line.strip('\t\r\n ') == conf:
-#                    match = True
-#
-#        if match == False:
-#            data.insert(addafter + 1, str("\t"+conf+"\n"))
-#            with sftp.file(netfile, 'w') as write:
-#                write.writelines(data)
 
 class FilesManager():
     @staticmethod
