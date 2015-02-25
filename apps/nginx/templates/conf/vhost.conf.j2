@@ -32,7 +32,7 @@ map $http_host $site_redir_{{ virtualhost.id }} {
 server {
 {%- for cluster in virtualhost.cluster.all() %}
     listen {{ cluster.address }}:{{ cluster.port }};
-    {% if cluster.ssl == True %}listen {{ cluster.address }}:{{ cluster.ssl_port }} ssl{% endif %};
+    {% if cluster.ssl == True %}listen {{ cluster.address }}:{{ cluster.ssl_port }} ssl;{% endif %}
 {%- endfor %}
 
     {%- if virtualhost.ssl_key != '' and virtualhost.ssl_cert != '' %}
