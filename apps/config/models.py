@@ -62,7 +62,7 @@ class Group(ConfigDefaultAdmin):
     version = models.IntegerField(default=0)
 
     def __unicode__(self):
-        return u"%s" % (self.group.name)
+        return u"%s" % (self.name)
 
     def save(self, *args, **kwargs):
         self.version += 1
