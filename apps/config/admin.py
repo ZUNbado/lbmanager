@@ -52,8 +52,8 @@ class GroupAdmin(ConfigDefaultAdmin):
             (None, {
                 'fields' : ( 'name', 'enabled', 'enable_transfer', 'enable_reload' ),
                 }),
-            ('Configuration dirs/files', {
-                'fields' : ( 'temp_dir', 'nginx_dir', 'ldirectord_conf', 'varnish_dir', 'graph_dir' ),
+            ('Configuration', {
+                'fields' : ( 'temp_dir', 'nginx_dir', 'ldirectord_conf', 'varnish_dir', 'graph_dir', 'cluster_bindnet' ),
                 }),
             ('Application', {
                 'fields' : ( 'app_path', 'admin_port' ),

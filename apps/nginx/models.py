@@ -51,6 +51,9 @@ class Location(NginxDefaults):
     ip_allow_list = models.CharField(max_length=200,null=True,blank=True)
     ip_allow_list.verbose_name = 'Allowed list IP'
 
+    class Meta:
+        unique_together = ( ( 'path_url', 'nginx_virtualhost' ), )
+
 class NginxVirtualHost(NginxDefaults):
     REDIRECTS = (
         (301, 'Permanent'),

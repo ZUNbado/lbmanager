@@ -26,6 +26,7 @@ class Backend(BalancerDefaults):
 
     class Meta:
         verbose_name = 'Backend'
+        unique_together = ( ( 'server', 'port'), )
    
 class Director(BalancerDefaults):
     TYPES = (

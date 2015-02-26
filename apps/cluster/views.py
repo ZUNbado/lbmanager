@@ -27,22 +27,19 @@ def apply(request):
         FilesManager.WriteFile(tempdir+'/ldirectord.cf', content)
 
         final_members = {}
-        bindnetaddr = None
         for server in Server.objects.filter(role_cluster=True,enabled=True): 
             member = Member.objects.get(server=server)
             if member.enabled: final_members[server.name]=server
-            bindnetaddr = server.address
 
-        bindnetaddr = bindnetaddr.rsplit('.', 1)[0]
         tpl = loader.get_template('conf/corosync.conf.j2')
-        ctx = RequestContext(request, { 'members': final_members, 'bindnetaddr' : bindnetaddr })
+        ctx = RequestContext(request, { 'members': final_members, 'bindnetaddr' : group.cluster_bindnet })
         corosync_content = tpl.render(ctx)
         FilesManager.WriteFile(os.path.join(tempdir, 'corosync.conf'), corosync_content)
 
         lvs_ip = ' '.join('lvs_ip_%s' % s.id for s in clusters)
         ips = [c.address for c in clusters]
         tpl = loader.get_template('conf/crm.j2')
-        ctx = RequestContext(request, { 'clusters' : clusters, 'group_id' : group.id, 'lvs_ip' : lvs_ip })
+        ctx = RequestContext(request, { 'clusters' : clusters, 'group_id' : group.id, 'lvs_ip' : lvs_ip, 'max_votes' : len(final_members) })
         crm_content = tpl.render(ctx)
         FilesManager.WriteFile(os.path.join(tempdir, 'crm'), crm_content)
 

@@ -48,6 +48,8 @@ class Group(ConfigDefaultAdmin):
     graph_dir.verbose_name = 'Graph root dir'
     varnish_dir = models.CharField(max_length=200)
     varnish_dir.verbose_name = 'Balancer conf dir'
+    cluster_bindnet = models.CharField(max_length=20,null=True,blank=True)
+    cluster_bindnet.verbose_name = 'Bind Network for cluster'
     cluster_servers = models.ManyToManyField(Server,null=True,blank=True)
     admin_port = models.IntegerField(default=8000,null=True,blank=True)
     admin_port.verbose_name = 'Administration port'
