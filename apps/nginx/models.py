@@ -72,7 +72,10 @@ class NginxVirtualHost(NginxDefaults):
 
     def save(self, *args, **kwargs):
         super(NginxVirtualHost, self).save(*args, **kwargs)
-        (location, created) = Location.objects.get_or_create(path_url='/', nginx_virtualhost = self)
+        try:
+            (location, created) = Location.objects.get_or_create(path_url='/', nginx_virtualhost = self)
+        except:
+            created = False
         if created:
             location.name = 'Default'
             if self.access_log: location.access_log = self.access_log
