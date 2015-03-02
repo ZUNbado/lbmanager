@@ -66,10 +66,10 @@ server {
     location {{ location.path_url }} {
         {%- if location.backend_type == 'proxy' %}
         {%- if location.director != None %}
-        proxy_pass          http://{{ location.director.name }}{% if location.path_url != '' %}/{% endif %};
+        proxy_pass          http://{{ location.director.name }}{% if location.path_url != '/' %}/{% endif %};
         proxy_set_header    X-Director              {{ location.director.name }};
         {%- else %}
-        proxy_pass          http://$upstream_{{ virtualhost.id }}{% if location.path_url != '' %}/{% endif %};
+        proxy_pass          http://$upstream_{{ virtualhost.id }}{% if location.path_url != '/' %}/{% endif %};
         proxy_set_header    X-Director              $backend_{{ virtualhost.id }};
         {%- endif %}
         proxy_set_header    Host                    $normalized_{{ virtualhost.id }};
