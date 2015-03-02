@@ -1,0 +1,26 @@
+{% extends "admin:admin/index.html" %}
+
+{% block content %}
+
+<table>
+{% for key, cluster in clusters.iteritems %}
+    <tr>
+            <td valign="middle" rowspan="{{ cluster.rowspan  }}">{{ key }}</td>
+            {% for vhost_name, vhost in cluster.vhosts.iteritems %}
+            {% if not forloop.first %}<tr>{% endif %}
+            <td>{{ vhost_name }}</td>
+            <td>
+                    <ul>
+                    {% for web in vhost.web.iteritems %}
+                    <li>{{ web }}</li>
+                    {% endfor %}
+                    </ul>
+            </td>
+            </tr>
+            {% endfor %}
+{% endfor %}
+</table>
+{% endblock %}
+
+{% block sidebar %}
+{% endblock %}

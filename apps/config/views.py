@@ -9,11 +9,11 @@ from prettytable import PrettyTable
 import requests
 
 from .models import Group, Server
-from ..cluster.models import Member
+from ..cluster.models import Cluster, Member
+from ..nginx.models import NginxVirtualHost
+from ..web.models import Domain, DomainAlias, UrlRedir, HostRedir
 from libs.confmanager import ConfManager, FilesManager
 import utils
-
-
 
 def sync(request):
     template = loader.get_template('database/sync.html')
@@ -51,4 +51,29 @@ def database_status(request):
 def database_status_all(request):
     template = loader.get_template('tools/database_status.html')
     context = RequestContext(request, { 'status' : utils.get_database_status_all() } )
+    return HttpResponse(template.render(context))
+
+def configuration_map(request):
+    cmap = {}
+    for cluster in Cluster.objects.all():
+        if cluster.name not in cmap: cmap[cluster.name] = { 'cluster' : cluster }
+        vmap = {}
+        for vhost in NginxVirtualHost.objects.filter(cluster=cluster):
+            if vhost.name not in vmap:  
+                web = Domain.objects.filter(virtual_host=vhost)
+                alias = DomainAlias.objects.filter(domain=web)
+                urlredir = UrlRedir.objects.filter(virtual_host=vhost)
+                hostredir = HostRedir.objects.filter(domain=web)
+                vmap[vhost.name] = { 
+                        'vhost' : vhost, 
+                        'web' : web,
+                        'alias' : alias,
+                        'urlredir' : urlredir,
+                        'hostredir' : hostredir,
+                        }
+        cmap[cluster.name]['vhosts'] = vmap
+        cmap[cluster.name]['rowspan'] = len(vmap)
+
+    template = loader.get_template('tools/configuration_map.html')
+    context = RequestContext(request, { 'clusters' : cmap } )
     return HttpResponse(template.render(context))

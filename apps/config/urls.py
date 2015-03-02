@@ -9,4 +9,5 @@ urlpatterns = [
 	url(r'^health$', views.health, name='health'),
 	url(r'^backend_disable/(?P<backend_name>\w+)/$', views.backend_disable, name='backend_disable'),
 	url(r'^backend_enable/(?P<backend_name>\w+)/$', views.backend_enable, name='backend_enable'),
+	url(r'^configuration_map$', views.configuration_map, name='configuration_map'),
 ]
