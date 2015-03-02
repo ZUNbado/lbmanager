@@ -41,7 +41,7 @@ server {
     {%- endif %}
 
     {%- if domains|length > 0 %}
-    server_name {{ domains|map(attribute='name')|join(' ') }}{% if aliases|length > 0 %}, {{ aliases|map(attribute='name')|join(' ')}}{% endif %};
+    server_name {{ domains|map(attribute='name')|join(' ') }}{% if aliases|length > 0 %} {{ aliases|map(attribute='name')|join(' ')}}{% endif %};
     {%- endif %}
 
 
