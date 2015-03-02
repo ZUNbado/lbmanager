@@ -40,9 +40,29 @@ class Director(BalancerDefaults):
 #        ( 'dns', 'DNS' ),
         ( 'fallback', 'Fallback' )
     )
+
+    TYPES_NGINX = (
+            ( 'round-robin', 'Round Robibn' ),
+            ( 'least_conn', 'Least Connected' ),
+            ( 'ip_hash', 'Session persistance' ),
+            ( 'weight', 'Weighted Round Robin' ),
+            )
     name = models.CharField(max_length=200)
-    backends = models.ManyToManyField(Backend)
-    dirtype = models.CharField(max_length=200,choices=TYPES,default='round-robin', verbose_name=u"Director type")
+#    backends = models.ManyToManyField(Backend)
+    backends_weight = models.ManyToManyField(Backend, through='DirectorBackendWeight', related_name='BackendWeight')
+    dirtype = models.CharField(max_length=200,choices=TYPES,default='round-robin', verbose_name=u"Cache: Director type")
+    dirtype_nginx = models.CharField(max_length=20,choices=TYPES_NGINX,default='round-robin', verbose_name=u'Front: Director type')
 
     class Meta:
         verbose_name = 'Director'
+
+class DirectorBackendWeight(BalancerDefaults):
+    backend = models.ForeignKey(Backend)
+    director = models.ForeignKey(Director)
+    weight = models.IntegerField(null=True, blank=True)
+
+    def __str__(self):
+        return '%s / %s' % (self.director.name, self.backend.name)
+
+    class Meta:
+        unique_together = ( ('backend', 'director') )

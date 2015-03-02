@@ -1,0 +1,14 @@
+{%- for upstream in upstreams %}
+upstream {{ upstream }} {
+    {%- if upstream.dirtype_nginx != 'round-robin' %}
+    {{ upstream.dirtype_nginx }};
+    {%- endif %}
+    {%- for backend in servers.filter(director=upstream, enabled=True) %}
+    server {{ backend.backend.server.address }}:{{ backend.backend.port }}{% if backend.weight != None %} weight={{ backend.weight }}{% endif %};
+    {%- endfor %}
+}
+{%- endfor %}
+
+upstream lbcache {
+    server 127.0.0.1:6081;
+}

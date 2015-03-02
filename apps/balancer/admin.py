@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Backend, Director
+from .models import Backend, Director, DirectorBackendWeight
 from ..config.models import Server
 
 def set_enable(modeladmin, request, queryset):
@@ -12,6 +12,12 @@ set_disable.short_description = u"Disable selected items"
 
 class BalancerDefaultAdmin(admin.ModelAdmin):
     actions = [set_enable,set_disable]
+
+
+class DirectorBackendWeightInline(admin.TabularInline):
+    model = DirectorBackendWeight
+    fields = ('backend', 'weight', 'enabled')
+    extra = 0
 
 class BackendAdmin(BalancerDefaultAdmin):
     list_display = ('name', 'server', 'port', 'enabled')
@@ -36,8 +42,9 @@ class BackendAdmin(BalancerDefaultAdmin):
 
 
 class DirectorAdmin(BalancerDefaultAdmin):
-    fields = ('name', 'backends', 'dirtype', 'enabled')
-    list_display = ('name', 'dirtype', 'enabled')
+    fields = ('name', 'dirtype', 'dirtype_nginx', 'enabled')
+    inlines = [ DirectorBackendWeightInline, ]
+    list_display = ('name', 'dirtype', 'dirtype_nginx', 'enabled')
 
 admin.site.register(Director, DirectorAdmin)
 admin.site.register(Backend, BackendAdmin)

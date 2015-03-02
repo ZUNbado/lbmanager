@@ -6,6 +6,7 @@ from jinja2 import Template as jinja_template
 import base64, hashlib, os
 
 from .models import NginxVirtualHost, Location
+from ..balancer.models import DirectorBackendWeight
 from ..config.models import Group, Server
 from ..cluster.models import Cluster, Member
 from ..web.models import Domain, DomainAlias, HostRedir, UrlRedir
@@ -26,6 +27,16 @@ def apply(request):
         ctx = RequestContext(request, { 'include_dir' : group.nginx_dir } )
         content = tpl.render(ctx)
         FilesManager.WriteFile(tempdir+'/lbmanager_include.conf', content)
+
+        # Generate upstream config
+        upstreams = []
+        for db in DirectorBackendWeight.objects.filter(enabled=True):
+            if db.director not in upstreams: upstreams.append(db.director)
+
+        tpl = loader.get_template('conf/upstream.conf.j2')
+        ctx = RequestContext(request, { 'upstreams' : upstreams, 'servers' : DirectorBackendWeight.objects.filter(enabled=True) })
+        content = tpl.render(ctx)
+        FilesManager.WriteFile(tempdir+'/lbmanager_upstream.conf', content)
 
         vfiles = []
         afiles = []
@@ -89,6 +100,7 @@ def apply(request):
                         man.command('mkdir -p '+group.nginx_dir+'/ssl/')
                         man.command('rm -f '+group.nginx_dir+'/ssl/*')
                         man.copy(tempdir+'/lbmanager_include.conf', group.nginx_dir+'conf.d/lbmanager_include.conf')
+                        man.copy(tempdir+'/lbmanager_upstream.conf', group.nginx_dir+'conf.d/lbmanager_upstream.conf')
                         for vfile in vfiles:
                             man.copy(tempdir+'/'+vfile['file'],group.nginx_dir+'/lbmanager/'+vfile['file'])
                         man.command('mkdir -p '+group.nginx_dir+'/auth/')

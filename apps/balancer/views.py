@@ -2,7 +2,7 @@ from django.http import HttpResponse
 from django.template import RequestContext, loader
 from django.shortcuts import redirect
 
-from .models import Director, Backend
+from .models import Director, Backend, DirectorBackendWeight
 from ..cluster.models import Member, Cluster
 from ..config.models import Group
 from libs.confmanager import ConfManager, FilesManager
@@ -21,14 +21,14 @@ def apply(request):
         directors = Director.objects.filter(enabled=True)
         backends = []
         for director in directors:
-            for backend in director.backends.filter(enabled=True):
-                if backend not in backends: 
-                    if backend.server.enabled:
-                        backends.append(backend)
+            for bw in DirectorBackendWeight.objects.filter(director=director, enabled=True):
+                if bw.backend not in backends: 
+                    if bw.backend.server.enabled:
+                        backends.append(bw.backend)
 
 
         tpl = loader.get_template('conf/backends.vcl.j2')
-        ctx = RequestContext(request, { 'directors' : directors, 'backends' : backends })
+        ctx = RequestContext(request, { 'directors' : directors, 'backends' : backends, 'DirectorBackendWeight' : DirectorBackendWeight.objects.all() })
         tpl_content=tpl.render(ctx)
         FilesManager.WriteFile(tempdir+'/backend.vcl', tpl_content)
         content.append({ 'group': group.name, 'content': tpl_content })
