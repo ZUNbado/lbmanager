@@ -1,0 +1,13 @@
+{% extends "admin:admin/index.html" %}
+
+{% block content %}
+<form method="post">
+{% csrf_token %}
+{{ form }}
+<input type="submit" value="Submit" />
+</form>
+<div id="content-main">
+{% endblock %}
+
+{% block sidebar %}
+{% endblock %}

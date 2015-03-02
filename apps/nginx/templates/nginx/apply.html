@@ -1,8 +1,6 @@
 {% extends "admin:admin/index.html" %}
 
 {% block content %}
-<div id="content-main">
-
 {% for group in data %}
 <h1>{{ group.group }}</h1>
 {% for map in group.maps %}

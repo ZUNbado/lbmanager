@@ -6,6 +6,7 @@ from jinja2 import Template as jinja_template
 import base64, hashlib, os
 
 from .models import NginxVirtualHost, Location
+from .forms import NginxApplyForm
 from ..balancer.models import DirectorBackendWeight
 from ..config.models import Group, Server
 from ..cluster.models import Cluster, Member
@@ -15,6 +16,17 @@ from libs.confmanager import ConfManager, FilesManager
 def apply(request):
     if not request.user.is_authenticated():
         return redirect('/admin/login/?next=%s' % request.path)
+
+    if request.method == 'POST':
+        form = NginxApplyForm(request.POST)
+        if form.is_valid():
+            actions = form.cleaned_data
+    else:
+        form = NginxApplyForm()
+        template = loader.get_template('nginx/confirm_apply.html')
+        context = RequestContext(request, { 'form' : form })
+        return HttpResponse(template.render(context))
+
 
     data_tpl = []
     status = []
@@ -140,7 +152,7 @@ def apply(request):
     template = loader.get_template('nginx/apply.html')
     context = RequestContext(request, {
         'data': data_tpl,
-        'status': status
+        'status': status,
     })
 
     return HttpResponse(template.render(context))

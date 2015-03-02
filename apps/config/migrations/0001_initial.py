@@ -65,5 +65,5 @@ class Migration(migrations.Migration):
             field=models.ManyToManyField(to='config.Server', null=True, blank=True),
             preserve_default=True,
         ),
-        migrations.RunPython(loadfixture),
+#        migrations.RunPython(loadfixture),
     ]
