@@ -65,16 +65,17 @@ server {
 {%- for location in locations %}
     location {{ location.path_url }} {
         {%- if location.backend_type == 'proxy' %}
+        {%- if location.director != None %}
+        proxy_pass          http://{{ location.director.name }}/;
+        proxy_set_header    X-Director              {{ location.director.name }};
+        {%- else %}
         proxy_pass          http://$upstream_{{ virtualhost.id }}/;
+        proxy_set_header    X-Director              $backend_{{ virtualhost.id }};
+        {%- endif %}
         proxy_set_header    Host                    $normalized_{{ virtualhost.id }};
         proxy_set_header    X-Real-IP               $remote_addr;
         proxy_set_header    X-Forwarded-For         $proxy_add_x_forwarded_for;
         proxy_set_header    X-Forwarded-Proto       $scheme;
-        {%- if location.director != None %}
-        proxy_set_header    X-Director              {{ location.director.name }};
-        {%- else %}
-        proxy_set_header    X-Director              $backend_{{ virtualhost.id }};
-        {%- endif %}
         proxy_set_header    X-enablecache           $cache_{{ virtualhost.id }};
         proxy_buffering     off;
         gzip                off;
