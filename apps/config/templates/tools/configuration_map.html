@@ -10,11 +10,19 @@
             {% if not forloop.first %}<tr>{% endif %}
             <td>{{ vhost_name }}</td>
             <td>
-                    <ul>
-                    {% for web in vhost.web.iteritems %}
-                    <li>{{ web }}</li>
-                    {% endfor %}
-                    </ul>
+                    <table>
+                            <tr><td>Webs/Alias</td><td>
+                            <ul>
+                            {% for web in vhost.web %}
+                            <li>{{ web }}</li>
+                            {% for alias in vhost.alias.objects.filter(domain=web) %}
+                            {% endfor %}
+                            {% endfor %}
+                            </ul>
+                            </td></tr>
+                            <tr><td>Host Redir</td><td></td></tr>
+                            <tr><td>URL Redir</td><td></td></tr>
+                    </table>
             </td>
             </tr>
             {% endfor %}
