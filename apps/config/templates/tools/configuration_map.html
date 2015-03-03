@@ -2,27 +2,57 @@
 
 {% block content %}
 
-<table>
+<table style="width: 700;">
+        <tr><th>Service IP Cluster</th><th>VirtualHost</th><th>Webs/Alias/Redirs</th></tr>
 {% for key, cluster in clusters.iteritems %}
     <tr>
-            <td valign="middle" rowspan="{{ cluster.rowspan  }}">{{ key }}</td>
+            <td rowspan="{{ cluster.rowspan  }}">{{ key }}</td>
             {% for vhost_name, vhost in cluster.vhosts.iteritems %}
             {% if not forloop.first %}<tr>{% endif %}
             <td>{{ vhost_name }}</td>
             <td>
-                    <table>
-                            <tr><td>Webs/Alias</td><td>
-                            <ul>
+                    <ul>
+                    {% if vhost.web|length > 0 %}
+                            <li>Webs
+                    <ul>
                             {% for web in vhost.web %}
-                            <li>{{ web }}</li>
-                            {% for alias in vhost.alias.objects.filter(domain=web) %}
-                            {% endfor %}
-                            {% endfor %}
+                            <li>
+                            {{ web.web }}
+                            {% if web.alias|length > 0 %}
+                            <ul>
+                                    <li>Alias
+                                    <ul>
+                                    {% for alias in web.alias %}
+                                    <li>{{ alias }}</li>
+                                    {% endfor %}
+                                    </ul>
+                                    </li>
                             </ul>
-                            </td></tr>
-                            <tr><td>Host Redir</td><td></td></tr>
-                            <tr><td>URL Redir</td><td></td></tr>
-                    </table>
+                            {% endif %}
+                            {% if web.hostredir|length > 0 %}
+                            <ul>
+                                    <li>Redirect from:<ul>
+                                    {% for hostredir in web.hostredir %}
+                                    <li>{{ hostredir }}</li>
+                                    {% endfor %}
+                                    </ul></li>
+                            </ul>
+                            {% endif %}
+                            </li>
+                            {% endfor %}
+                    </ul>
+                    </li>
+                    {% endif %}
+                    {% if vhost.urlredir|length > 0 %}
+                    <li>Redirects
+                    <ul>
+                            {% for urlredir in vhost.urlredir %}
+                            <li>{{ urlredir }} -&gt; {{ urlredir.url }}</li>
+                            {% endfor %}
+                    </ul>
+                    </li>
+                    {% endif %}
+            </ul>
             </td>
             </tr>
             {% endfor %}

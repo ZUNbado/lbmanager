@@ -60,16 +60,15 @@ def configuration_map(request):
         vmap = {}
         for vhost in NginxVirtualHost.objects.filter(cluster=cluster):
             if vhost.name not in vmap:  
-                web = Domain.objects.filter(virtual_host=vhost)
-                alias = DomainAlias.objects.filter(domain=web)
+                webs = []
+                for web in Domain.objects.filter(virtual_host=vhost):
+                    webs.append({ 'web' : web, 'alias' : DomainAlias.objects.filter(domain=web), 'hostredir' : HostRedir.objects.filter(domain=web) })
+
                 urlredir = UrlRedir.objects.filter(virtual_host=vhost)
-                hostredir = HostRedir.objects.filter(domain=web)
                 vmap[vhost.name] = { 
                         'vhost' : vhost, 
-                        'web' : web,
-                        'alias' : alias,
+                        'web' : webs,
                         'urlredir' : urlredir,
-                        'hostredir' : hostredir,
                         }
         cmap[cluster.name]['vhosts'] = vmap
         cmap[cluster.name]['rowspan'] = len(vmap)
